@@ -1,0 +1,545 @@
+.home-shell{
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.home-root{
+  display: flex;
+  flex-direction: column;
+}
+.zs {
+  position: absolute;
+  bottom: 75px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #fff;
+  img {
+    width: 20px;
+    margin-right: 5px;
+  }
+}
+.app_container {
+  position: relative;
+  width: 375px;
+  height: 614px;
+  max-width: 375px;
+  max-height: 614px;
+  background: url("../assets/bg1@2x.png") no-repeat;
+}
+
+.app_container_xy {
+  background: url("../assets/bg1@2x.png") no-repeat;
+  background-size: 100% 100%;
+}
+.app_container_hy {
+  background: url("../assets/bg2@2x.png") no-repeat;
+  background-size: 100% 100%;
+}
+.app_container_my {
+  background: url("../assets/bg3@2x.png") no-repeat;
+  background-size: 100% 100%;
+}
+
+.app_container_top {
+  position: relative;
+  padding-top: 26px;
+  padding-left: 14px;
+}
+
+.app_container_menu_box {
+  position: absolute;
+  top: 80px;
+  left: 11px;
+  z-index: 2;
+}
+
+.app_container_menu {
+  position: relative; /* 确保伪元素相对于这个容器定位 */
+  width: 90px;
+  height: 140px;
+  font-size: 13px;
+  color: #90b0ee;
+  background: rgba(8, 7, 38, 0.6);
+  border-radius: 10px;
+  > div {
+    height: 35px;
+    line-height: 35px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .bt {
+    border-bottom: 1px solid rgba(142, 170, 242, 0.1);
+  }
+}
+
+.app_container_menu::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgba(8, 7, 38, 0.6); /* 三角形的颜色 */
+  position: absolute;
+  top: -9px;
+  left: 24%;
+  transform: translateX(-50%);
+}
+
+.default {
+  display: flex;
+  margin-top: 20px;
+  margin-left: 45px;
+  width: 287.55px;
+  height: 33px;
+  background: url("../assets/默认框选@3x.png") no-repeat;
+  background-size: 100% 100%;
+  div {
+    flex: 1;
+    color: #4b60b3;
+    font-size: 13.9988px;
+    text-align: center;
+    line-height: 33px;
+  }
+  .active {
+    color: #fbeccc;
+    background: url("../assets/选中按钮@3x.png") no-repeat;
+    background-size: 100% 100%;
+  }
+}
+
+.icon-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.icon-wrapper .van-icon-success {
+  line-height: 19.9988px;
+}
+
+.icon-wrapper .van-icon-cross {
+  line-height: 19.9988px;
+}
+
+.home_container {
+  position: relative;
+  width: 375px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: 100% 100%;
+  .progress{
+    position: absolute;
+    transform: translateY(-6px) translateX(1px);
+    z-index: 0;
+  }
+  .lucky-grid{
+    z-index: 1;
+    transform: translateY(-5px);
+  }
+  .chose-bg-shell{
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+    height: 65px;
+
+    .chose-bg{
+      width: 76px;
+    }
+  }
+
+  .shine-gift{
+    position: absolute;
+    overflow: hidden;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    top: -20px;
+    z-index: 1;
+    &:after {
+      content: '';
+      position: absolute;
+      left: -200%;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.6) 100%);
+      background-size: 200% 100%;
+      animation: shine 1.5s infinite;
+      transform: skew(-45deg);
+      z-index: 9;
+    }
+  }
+
+  .level-tip{
+    font-size: 12px;
+    color: white;
+    position: absolute;
+    top: 106px;
+    font-family: PingfangSC-Regular;
+    span{
+      font-weight: 600;
+      position: relative;
+      margin-left: 2px;
+
+    }
+  }
+}
+.home_zz {
+  display: block;
+  position: absolute;
+  top: 61px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  transform-origin: bottom;
+}
+.lucky-grid{
+  position: relative;
+  .btn{
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    margin: auto;
+    width: 96px;
+    height: 96px;
+    z-index: 1;
+  }
+}
+.lucky-shell{
+  width: 340px;
+  height: 340px;
+}
+// .home_active_xy {
+//   background: url("../assets/m命运外圈.png") no-repeat;
+// }
+// .home_active_hy {
+//   background: url("../assets/m命运外圈.png") no-repeat;
+// }
+// .home_active_my {
+//   background: url("../assets/m命运外圈 拷贝.png") no-repeat;
+// }
+
+.home_container_circle {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app_container_tg {
+  width: 50px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-size: 12px;
+  margin-left: 19.5px;
+  margin-top: 8px;
+  color: #fff;
+  > div {
+    margin-bottom: 5px;
+  }
+}
+
+.circle-item {
+  position: absolute;
+  width: 67.0012px;
+  height: 67.0012px;
+  background: url("../assets/辛运礼物框@3x.png") no-repeat;
+  background-size: 100% 100%;
+  transform: rotate(-120deg);
+}
+
+@keyframes rotate {
+  from {
+    transform: translate(-50%, 0%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, 0%) rotate(360deg);
+  }
+}
+
+.rotate-animation {
+  animation: rotate 1s linear infinite;
+}
+.rotate-end {
+  transition: all 1s linear;
+}
+
+.footer {
+  display: flex;
+  position: absolute;
+  bottom: 17px;
+  margin-left: 12.5px;
+  width: 350px;
+  height: 45px;
+  background: url("../assets/button_bg1.png") no-repeat;
+  background-size: 100% 100%;
+  color: #dfe3ff;
+  font-size: 14px;
+}
+.footer_active {
+  background: url("../assets/button.png") no-repeat;
+  background-size: 100% 100%;
+
+  color: #9e512f;
+}
+
+.footer_item {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  width: 33.333%;
+  height: 100%;
+  justify-content: center;
+  > div {
+    display: flex;
+    align-items: center;
+  }
+  .first-draw{
+    position: absolute;
+    top: 4px;
+    left: 0;
+
+    .text{
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+      padding: 4px 12px;
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 2px;
+
+      transform: translateY(-100%);
+      background: linear-gradient(to right, rgb(229,102,155), rgb(229,84,105));
+      color: white;
+
+      &:after {
+        content: '';
+        position: absolute;
+        left: -200%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.6) 100%);
+        background-size: 200% 100%;
+        animation: shine 1.5s infinite;
+        transform: skew(-45deg);
+        z-index: 9;
+      }
+    }
+    &:before{
+      position: absolute;
+      content: '';
+      right: 0px;
+      top: 0px;
+      height: 0px;
+      width: 0px;
+      border: 5px solid transparent;
+      border-top-color: rgb(175,34,46);
+      border-left-color: rgb(175,34,46);
+    }
+  }
+}
+
+.dialog_box {
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 15, 15, 0.8);
+}
+
+.dialog_1 {
+  position: relative;
+  width: 314.5px;
+  height: 387px;
+  background: url("../assets/弹窗背景.png") no-repeat;
+  background-size: 100% 100%;
+  font-size: 12px;
+  color: RGBA(252, 241, 213, 1);
+}
+
+.dialog_1_text {
+  padding: 35px 15px 0 15px;
+  line-height: 25px;
+}
+.dialog_1_text_xy {
+  margin: 35px 15px 0 15px;
+  max-height: 320px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.info-img-shell{
+  border-radius: 12px;
+  height: 387px;
+  max-height: none;
+  margin: 0;
+  .info-img{
+    width: 100%;
+  }
+}
+
+.dialog_1_text_zj {
+  padding: 35px 15px 0 4.5px;
+}
+.zj_box {
+  min-height: 220px;
+  overflow-y: scroll;
+  > div {
+    float: left;
+    width: 60px;
+    height: 60px;
+    margin-left: 11.5px;
+    margin-bottom: 11.5px;
+  }
+  .zj_box_item_shell{
+    position: relative;
+    .tag{
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: 2px 4px;
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+      background: #DB4387;
+      color: white;
+      font-size: 8px;
+    }
+  }
+}
+
+.zj_footer {
+  color: #fff;
+  font-size: 14px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.zj_box_item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 60px;
+  height: 60px;
+  font-size: 8px;
+  img {
+    width: 50%;
+  }
+}
+
+.zj_box_item_1 {
+  background: url("../assets/辛运礼物框.png") no-repeat;
+  background-size: 100% 100%;
+}
+.zj_box_item_2 {
+  background: url("../assets/命运礼物框.png") no-repeat;
+  background-size: 100% 100%;
+}
+.zj_box_item_3 {
+  background: url("../assets/选中礼物框.png") no-repeat;
+  background-size: 100% 100%;
+}
+.zj_box_item_4 {
+  background: url("../assets/lucky.png") no-repeat;
+  background-size: 100% 100%;
+}
+.sm {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.gb {
+  position: absolute;
+  right: 0px;
+  top: -30px;
+}
+
+.dialog_1_text_scroll {
+  height: 300px; /* 根据需要调整高度 */
+  overflow-y: auto; /* 启用垂直滚动 */
+}
+.scroll_header {
+  display: flex;
+  > div {
+    width: 33.333%;
+    text-align: center;
+    line-height: 25px;
+  }
+}
+.loading {
+  text-align: center;
+  margin-top: 10px;
+}
+.scroll_item {
+  width: 280px;
+  height: 46px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  > div {
+    width: 90px;
+    line-height: 46px;
+    text-align: center;
+  }
+}
+
+.item_tx,
+.item_nc,
+.item_sl {
+  width: 20% !important;
+}
+.item_lw,
+.item_lw_value {
+  width: 40% !important;
+}
+
+.item_lw_value {
+  height: 46px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  > div {
+    line-height: 15px !important;
+  }
+  .value_title {
+    font-size: 12px;
+    color: rgba(251, 222, 159, 1);
+  }
+  .value_time {
+    font-size: 10px;
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: 200%;
+    background-position: -100%;
+  }
+  100% {
+    left: -200%;
+    background-position: 200%;
+  }
+}

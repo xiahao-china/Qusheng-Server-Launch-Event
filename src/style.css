@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app {
+  margin: 0 auto;
+  max-width: 375px;
+  max-height: 614px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
