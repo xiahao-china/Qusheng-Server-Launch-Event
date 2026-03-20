@@ -4,14 +4,35 @@
   border-radius: 16px;
   overflow: hidden;
 
-  .million-rank-bg {
+  .million-rank-bg-shell {
     width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
     display: block;
+    overflow: hidden;
+    height: 50%;
+    .million-rank-bg {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: contain;
+    }
+    &.bottom {
+      top: initial;
+      bottom: 0;
+      .million-rank-bg {
+        top: initial;
+        bottom: 0;
+      }
+    }
   }
 
   .million-rank-content {
-    position: absolute;
-    inset: 10px;
+    position: relative;
+    margin: 10px;
+    z-index: 2;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.25);
     background: rgba(56, 20, 151, 0.72);
@@ -24,10 +45,6 @@
     display: flex;
     justify-content: center;
     margin-bottom: 10px;
-
-    &.million-rank-title-wrap-second {
-      margin-top: 12px;
-    }
   }
 
   .million-rank-title-bg {
@@ -46,38 +63,13 @@
     font-weight: 700;
   }
 
-  .million-lucky-header,
   .million-board-header {
     display: grid;
     color: #fff;
     font-weight: 700;
     font-size: 12px;
     margin-bottom: 6px;
-  }
-
-  .million-lucky-header {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  .million-board-header {
     grid-template-columns: 46px 1fr 84px 74px;
-  }
-
-  .million-lucky-row {
-    height: 38px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    align-items: center;
-    padding: 0 10px;
-    font-size: 12px;
-    margin-bottom: 6px;
-
-    span:last-child {
-      color: #ffe27a;
-      font-weight: 700;
-    }
   }
 
   .million-board-row {

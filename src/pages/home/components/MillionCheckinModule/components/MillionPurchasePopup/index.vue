@@ -1,7 +1,9 @@
 <template>
   <div class="million-purchase-popup-mask">
     <section class="million-purchase-popup-panel">
-      <img class="million-purchase-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景" />
+      <div class="million-purchase-popup-bg-shell">
+        <img class="million-purchase-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景" />
+      </div>
       <div class="million-purchase-popup-content">
         <div class="million-purchase-popup-title-wrap">
           <img class="million-purchase-popup-title-bg" :src="millionCheckinAssets.titleBackground" alt="标题背景" />
@@ -9,10 +11,13 @@
         </div>
         <template v-if="!props.success">
           <img class="million-purchase-popup-image" :src="props.dressUpImage" :alt="props.dressUpName" />
-          <p class="million-purchase-popup-name">{{ props.dressUpName }}</p>
+          <div class="million-reward-platform">
+            <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
+            <p class="million-reward-name">{{ props.dressUpName }}</p>
+          </div>
           <div class="million-purchase-popup-quantity-row">
             <button class="million-purchase-popup-step-btn" type="button" @click="handleMinus">-</button>
-            <span class="million-purchase-popup-quantity">{{ localQuantity }}小时</span>
+            <span class="million-purchase-popup-quantity">{{ localQuantity }}个</span>
             <button class="million-purchase-popup-step-btn" type="button" @click="handlePlus">+</button>
           </div>
           <p class="million-purchase-popup-price">
@@ -37,6 +42,9 @@
             <img :src="millionCheckinAssets.confirmButton" alt="我知道啦" />
           </button>
         </template>
+      </div>
+      <div class="million-purchase-popup-bg-shell bottom">
+        <img class="million-purchase-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景" />
       </div>
     </section>
   </div>

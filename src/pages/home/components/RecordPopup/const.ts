@@ -1,7 +1,3 @@
-import { prizeList } from "../PrizeSection/const";
-
-export type ActivityPopupType = "rule-description" | "all-prizes";
-
 export const activityPopupAssets = {
   background: new URL("../../../../assets/modal-background.png", import.meta.url).href,
   titleBackground: new URL("../../../../assets/modal-title-background.png", import.meta.url).href,
@@ -96,5 +92,3 @@ export const activityRuleSections = [
     ],
   },
 ];
-
-export const allPrizeList = prizeList;

@@ -9,28 +9,31 @@
     <main class="home-main">
       <HeroSection :current-mode="currentMode" @mode-change="handleModeChange" />
       <TeamChargeModule v-if="currentMode === 'team-charge'" />
-      <MillionCheckinModule v-else-if="currentMode === 'million-checkin'" />
+      <MillionCheckinModule v-else-if="currentMode === 'million-checkin'" @mode-change="handleModeChange" />
     </main>
-    <ActivityPopup v-if="visiblePopup" :popup-type="visiblePopup" @close="closePopup" />
+    <RulePopup v-if="visiblePopup === 'rule-description'" @close="closePopup" />
+    <AllPrizesPopup v-if="visiblePopup === 'all-prizes'" @close="closePopup" />
+    <RecordPopup v-if="visiblePopup === 'show-records'" :record-list="[]" @close="closePopup" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import ActivityPopup from "./components/ActivityPopup/index.vue";
+import RulePopup from "./components/RulePopup/index.vue";
+import AllPrizesPopup from "./components/AllPrizesPopup/index.vue";
+import RecordPopup from "./components/RecordPopup/index.vue";
 import HeroSection from "./components/HeroSection/index.vue";
 import MillionCheckinModule from "./components/MillionCheckinModule/index.vue";
 import TeamChargeModule from "./components/TeamChargeModule/index.vue";
 import type { HeroMode } from "./components/HeroSection/const";
-import type { ActivityPopupType } from "./components/ActivityPopup/const";
 import { homeTheme } from "./const";
 
 const currentMode = ref<HeroMode>("million-checkin");
-const visiblePopup = ref<ActivityPopupType | null>(null);
+const visiblePopup = ref<"rule-description" | "all-prizes" | "show-records" | null>(null);
 
 const handleModeChange = (mode: HeroMode) => {
-  if (mode === "rule-description" || mode === "all-prizes") {
-    visiblePopup.value = mode;
+  if (mode === "rule-description" || mode === "all-prizes" || mode === "show-records") {
+    visiblePopup.value = mode as any;
     return;
   }
   currentMode.value = mode;

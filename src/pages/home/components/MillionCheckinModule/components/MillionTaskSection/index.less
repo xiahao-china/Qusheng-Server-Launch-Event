@@ -4,32 +4,55 @@
   border-radius: 16px;
   overflow: hidden;
 
-  .million-task-bg {
+  .million-task-bg-shell {
     width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
     display: block;
+    overflow: hidden;
+    height: 50%;
+    .million-task-bg {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: contain;
+    }
+    &.bottom {
+      top: initial;
+      bottom: 0;
+      .million-task-bg {
+        top: initial;
+        bottom: 0;
+      }
+    }
   }
 
   .million-task-content {
-    position: absolute;
-    inset: 10px;
+    position: relative;
+    margin: 10px;
+    z-index: 2;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.25);
-    background: rgba(56, 20, 151, 0.72);
     padding: 12px 10px;
     color: #fff;
   }
 
   .million-task-desc {
-    margin: 0 0 10px;
+    margin: 8px 0 10px;
     text-align: center;
-    font-size: 12px;
-    line-height: 1.4;
+    font-size: 10px;
+    width: 100%;
+    height: 17px;
+    line-height: 17px;
+    color: #FFFACC;
+    background: linear-gradient(90deg, rgba(101, 73, 172, 0) 0%, rgba(102, 73, 173, 0.9072) 51%, rgba(71, 40, 121, 0) 100%);
   }
 
   .million-task-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
   }
 
   .million-task-card {
@@ -48,26 +71,45 @@
   }
 
   .million-task-image {
-    width: 78px;
-    height: 78px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
   }
 
   .million-task-name {
-    margin: 4px 0 6px;
-    font-size: 12px;
+    margin: 0 0 6px;
+    font-size: 9px;
     color: #ffe27a;
     font-weight: 700;
   }
 
   .million-task-buy {
-    width: 56px;
-    height: 22px;
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
-    font-size: 11px;
+    width: 60px;
+    height: 26px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    position: relative;
+    margin: 0 auto;
+
+    .text {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      font-size: 9px;
+      color: white;
+    }
+
+    img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
   }
 
   .million-task-quantity-row {
@@ -131,27 +173,47 @@
 
   .million-task-action-row {
     margin-top: 10px;
-    display: grid;
-    grid-template-columns: 84px 1fr 84px;
-    gap: 8px;
+    display: flex;
     align-items: center;
   }
 
   .million-task-rule,
   .million-task-record {
+    display: inline-flex;
+    align-items: flex-end;
+    padding-bottom: 4px;
     height: 40px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: rgba(58, 21, 142, 0.9);
-    color: #ffe27a;
-    font-size: 13px;
+    white-space: nowrap;
+    font-size: 11px;
     font-weight: 700;
+    background: transparent;
+    border: none;
+    text-decoration: underline;
+
+    color: #FFF07A;
   }
 
   .million-task-action {
     border: 0;
     padding: 0;
+    margin-left: 16px;
+    margin-right: 16px;
+    position: relative;
     background: transparent;
+    .text{
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+
+      font-size: 14px;
+      color: white;
+    }
 
     img {
       width: 100%;

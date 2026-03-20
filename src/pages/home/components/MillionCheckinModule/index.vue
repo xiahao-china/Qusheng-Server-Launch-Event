@@ -4,19 +4,19 @@
     <MillionRewardSection :reward-list="rewardList" />
     <MillionTaskSection
       :dress-up-list="millionDressUpList"
-      :selected-dress-up-item-id="selectedDressUpItemId"
       :progress-percent="progressPercent"
       :is-joining="joining"
       :chest-status="chestInfo?.status ?? 0"
       :current-participation-count="chestInfo?.currentParticipationCount ?? 0"
       :total-open-times="chestInfo?.totalOpenTimes ?? 0"
       :single-participation-amount="chestInfo?.singleParticipationAmount ?? 0"
-      @select-dress-up="handleSelectDressUp"
+      @purchase="handlePurchaseDressUp"
       @join="handleJoin"
       @show-rule="showRule"
       @show-records="showRecords"
     />
-    <MillionRankSection :lucky-list="luckyList" :rank-list="rankList" />
+    <MillionLuckySection :lucky-list="luckyList" />
+    <MillionBoardSection :rank-list="rankList" />
     <MillionPurchasePopup
       v-if="purchasePopupVisible && selectedDressUpItem"
       :dress-up-name="selectedDressUpItem.name"
@@ -40,7 +40,8 @@ import { getUserRecordList } from "@/api/chest/record";
 import type { IChestInfo, IUserRecordItem } from "@/api/chest/types";
 import MillionNoticeSection from "./components/MillionNoticeSection/index.vue";
 import MillionPurchasePopup from "./components/MillionPurchasePopup/index.vue";
-import MillionRankSection from "./components/MillionRankSection/index.vue";
+import MillionLuckySection from "./components/MillionLuckySection/index.vue";
+import MillionBoardSection from "./components/MillionBoardSection/index.vue";
 import MillionRewardSection from "./components/MillionRewardSection/index.vue";
 import MillionTaskSection from "./components/MillionTaskSection/index.vue";
 import { millionAvatarFallbacks, millionDefaultNoticeText, millionDressUpList, millionPrizeFallbackList } from "./const";
@@ -182,8 +183,11 @@ const loadGlobalChestInfo = async () => {
   }
 };
 
-const handleSelectDressUp = (dressUpItemId: number) => {
+const handlePurchaseDressUp = (dressUpItemId: number) => {
   selectedDressUpItemId.value = dressUpItemId;
+  pendingJoinQuantity.value = 1;
+  purchaseSuccess.value = false;
+  purchasePopupVisible.value = true;
 };
 
 const handleJoin = async (quantity: number) => {
@@ -250,25 +254,16 @@ const buildRecordText = (records: IUserRecordItem[]) => {
     .join("\n");
 };
 
-const showRecords = async () => {
-  try {
-    const response = await getUserRecordList({ page: 1, size: 20 });
-    const data = resolveApiResult(response);
-    showToast({
-      message: buildRecordText(data.list),
-      duration: 4000,
-    });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "获取记录失败";
-    showToast(message);
-  }
-};
+const emit = defineEmits<{
+  (event: "mode-change", mode: "rule-description" | "show-records"): void;
+}>();
 
 const showRule = () => {
-  showToast({
-    message: "参与流程：选择装扮与数量，点击立即打卡，成功后会自动刷新进度与排行",
-    duration: 3000,
-  });
+  emit("mode-change", "rule-description");
+};
+
+const showRecords = () => {
+  emit("mode-change", "show-records");
 };
 
 onMounted(() => {
