@@ -67,28 +67,51 @@
     }
 
     .million-lucky-header {
-      display: grid;
+      display: flex;
+      justify-content: space-between;
       color: #fff;
       font-weight: 700;
       font-size: 12px;
       margin-bottom: 6px;
-      grid-template-columns: 1fr 1fr 1fr;
+
+      span {
+        flex: 1;
+        text-align: center;
+        
+        &:first-child {
+          text-align: left;
+        }
+        
+        &:last-child {
+          text-align: right;
+        }
+      }
     }
 
     .million-lucky-row {
       height: 38px;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.08);
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
       padding: 0 10px;
       font-size: 12px;
       margin-bottom: 6px;
 
-      span:last-child {
-        color: #ffe27a;
-        font-weight: 700;
+      span {
+        flex: 1;
+        text-align: center;
+        
+        &:first-child {
+          text-align: left;
+        }
+        
+        &:last-child {
+          text-align: right;
+          color: #ffe27a;
+          font-weight: 700;
+        }
       }
     }
 

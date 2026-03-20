@@ -13,7 +13,7 @@
     </main>
     <RulePopup v-if="visiblePopup === 'rule-description'" @close="closePopup" />
     <AllPrizesPopup v-if="visiblePopup === 'all-prizes'" @close="closePopup" />
-    <RecordPopup v-if="visiblePopup === 'show-records'" :record-list="[]" @close="closePopup" />
+    <RecordPopup v-if="visiblePopup === 'show-records'" @close="closePopup" />
   </div>
 </template>
 

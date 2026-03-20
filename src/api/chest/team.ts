@@ -1,18 +1,53 @@
 import { post } from "@/util/request";
 import { IApiResponse, IRenameTeamPayload, ITeamMountConfig, ITeamQualificationInfo } from "@/api/chest/types";
 
-export const getTeamQualificationInfo = () => {
-  return post<IApiResponse<ITeamQualificationInfo>>("/chest/team/info");
+export const getTeamQualificationInfo = (): Promise<IApiResponse<ITeamQualificationInfo>> => {
+  // return post<IApiResponse<ITeamQualificationInfo>>("/chest/team/info");
+  return Promise.resolve({
+    code: 200,
+    msg: "success",
+    data: {
+      hasTeam: true,
+      teamId: 1001,
+      teamName: "Awesome Team",
+      ownerUserId: 2001
+    }
+  });
 };
 
-export const getTeamMountConfig = () => {
-  return post<IApiResponse<ITeamMountConfig>>("/chest/team/mountConfig");
+export const getTeamMountConfig = (): Promise<IApiResponse<ITeamMountConfig>> => {
+  // return post<IApiResponse<ITeamMountConfig>>("/chest/team/mountConfig");
+  return Promise.resolve({
+    code: 200,
+    msg: "success",
+    data: {
+      mountItemId: 501,
+      mountName: "Epic Mount",
+      mountUrl: "https://example.com/mount.png",
+      price: 1000
+    }
+  });
 };
 
-export const createTeam = () => {
-  return post<IApiResponse<ITeamQualificationInfo>>("/chest/team/create");
+export const createTeam = (): Promise<IApiResponse<ITeamQualificationInfo>> => {
+  // return post<IApiResponse<ITeamQualificationInfo>>("/chest/team/create");
+  return Promise.resolve({
+    code: 200,
+    msg: "success",
+    data: {
+      hasTeam: true,
+      teamId: 1002,
+      teamName: "New Team",
+      ownerUserId: 2002
+    }
+  });
 };
 
-export const renameTeam = (payload: IRenameTeamPayload) => {
-  return post<IApiResponse<null>>("/chest/team/rename", payload);
+export const renameTeam = (payload: IRenameTeamPayload): Promise<IApiResponse<null>> => {
+  // return post<IApiResponse<null>>("/chest/team/rename", payload);
+  return Promise.resolve({
+    code: 200,
+    msg: "success",
+    data: null
+  });
 };
