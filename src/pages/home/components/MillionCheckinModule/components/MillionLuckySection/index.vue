@@ -5,7 +5,6 @@
     </div>
     <div class="million-rank-content">
       <div class="million-rank-title-wrap">
-        <img class="million-rank-title-bg" :src="millionCheckinAssets.titleBackground" alt="标题背景" />
         <h3 class="million-rank-title">幸运用户</h3>
       </div>
       <div class="million-lucky-header">

@@ -28,9 +28,11 @@
           <div class="million-purchase-popup-action-row">
             <button class="million-purchase-popup-btn" type="button" :disabled="props.submitting" @click="emit('close')">
               <img :src="millionCheckinAssets.cancelButton" alt="取消" />
+              <div class="text">取消</div>
             </button>
             <button class="million-purchase-popup-btn" type="button" :disabled="props.submitting" @click="emit('confirm', localQuantity)">
               <img :src="millionCheckinAssets.confirmButton" alt="确定" />
+              <div class="text">确定</div>
             </button>
           </div>
         </template>
