@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm add:*)",
+      "Bash(mv:*)",
+      "Bash(pnpm build:*)",
+      "Bash(sed:*)",
+      "Bash(pnpm type-check:*)",
+      "mcp__zread__read_file"
+    ]
+  }
+}
