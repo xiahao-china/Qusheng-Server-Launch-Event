@@ -100,7 +100,7 @@ const mountPopupVisible = ref(false);
 const renamePopupVisible = ref(false);
 const initiatePopupVisible = ref(false);
 const sharePopupVisible = ref(false);
-const addressPopupVisible = ref(false);
+const addressPopupVisible = ref(true);
 
 const moduleStatus = computed<TeamModuleStatus>(() => {
   if (!teamInfo.value?.hasTeam) {

@@ -130,7 +130,7 @@ const emitConfirm = () => {
     text-align: center;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 16px;
+    margin: 0px;
   }
 
   .address-prize-wrap {
@@ -178,7 +178,7 @@ const emitConfirm = () => {
   .address-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
     margin-bottom: 30px;
     padding: 0 10px;
 
@@ -189,15 +189,15 @@ const emitConfirm = () => {
 
       .form-label {
         width: 60px;
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
         text-align: right;
         flex-shrink: 0;
       }
 
       .form-input {
         flex: 1;
-        height: 36px;
+        height: 30px;
         margin: 0;
         text-align: left;
         padding: 0 16px;
@@ -210,6 +210,11 @@ const emitConfirm = () => {
 
   .rename-action-row {
     margin-top: 0;
+    .rename-action-btn{
+      .text{
+        font-size: 16px;
+      }
+    }
   }
 }
 </style>
