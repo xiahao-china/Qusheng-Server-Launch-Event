@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { inviteAssets, inviteText } from "./const";
-import "./index.less";
-</script>
-
 <template>
   <section class="team-invite">
     <img class="team-invite-bg" :src="inviteAssets.background" alt="战队邀请卡片" />
@@ -16,3 +11,8 @@ import "./index.less";
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { inviteAssets, inviteText } from "./const";
+import "./index.less";
+</script>

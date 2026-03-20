@@ -1,0 +1,182 @@
+.million-purchase-popup-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: rgba(0, 0, 0, 0.68);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.million-purchase-popup-panel {
+  position: relative;
+  width: min(100%, 360px);
+
+  .million-purchase-popup-bg {
+    width: 100%;
+    display: block;
+  }
+
+  .million-purchase-popup-content {
+    position: absolute;
+    inset: 12px 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 225, 115, 0.5);
+    padding: 6px 14px 18px;
+    text-align: center;
+    color: #ffe95f;
+    display: flex;
+    flex-direction: column;
+    min-height: 470px;
+  }
+
+  .million-purchase-popup-title-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .million-purchase-popup-title-bg {
+    width: 178px;
+    display: block;
+  }
+
+  .million-purchase-popup-title {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .million-purchase-popup-image {
+    margin: 12px auto 0;
+    width: 170px;
+    height: 170px;
+    object-fit: contain;
+  }
+
+  .million-purchase-popup-image-success {
+    margin-top: 8px;
+  }
+
+  .million-purchase-popup-name {
+    margin: 6px auto 0;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    border: 1px solid rgba(255, 228, 112, 0.8);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .million-purchase-popup-quantity-row {
+    margin: 30px auto 0;
+    width: 220px;
+    height: 38px;
+    border-radius: 999px;
+    background: #fff;
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+  }
+
+  .million-purchase-popup-step-btn {
+    border: 0;
+    background: transparent;
+    color: #9a63ff;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .million-purchase-popup-quantity {
+    color: #3c2494;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .million-purchase-popup-price {
+    margin: 14px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #ffe95f;
+    font-size: 44px;
+    font-weight: 800;
+
+    img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+  }
+
+  .million-purchase-popup-balance {
+    margin: 8px 0 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .million-purchase-popup-action-row {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .million-purchase-popup-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+
+    img {
+      width: 100%;
+      height: 52px;
+      object-fit: fill;
+      display: block;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+    }
+  }
+
+  .million-purchase-popup-success-text {
+    margin: 24px 12px 0;
+    color: #ffe95f;
+    font-size: 34px;
+    line-height: 1.4;
+    font-weight: 700;
+  }
+
+  .million-purchase-popup-ok-btn {
+    margin-top: auto;
+
+    img {
+      width: min(100%, 250px);
+      margin: 0 auto;
+    }
+  }
+}

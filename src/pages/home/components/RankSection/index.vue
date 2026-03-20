@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { rankAssets, rankList, rankTabs } from "./const";
-import "./index.less";
-</script>
-
 <template>
   <section class="rank-section">
     <img class="rank-bg" :src="rankAssets.boardBg" alt="贡献榜单" />
@@ -26,3 +21,8 @@ import "./index.less";
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { rankAssets, rankList, rankTabs } from "./const";
+import "./index.less";
+</script>

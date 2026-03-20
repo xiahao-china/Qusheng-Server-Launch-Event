@@ -1,27 +1,18 @@
 import { post } from "@/util/request";
-import {
-  IApiResponse,
-  IChestInfo,
-  IInitTeamChestPayload,
-  IJoinTeamChestPayload,
-  ITeamHistoryItem,
-} from "@/api/chest/types";
+import { IApiResponse, IChestInfo, IInitTeamChestPayload, IJoinTeamChestPayload, ITeamHistoryItem } from "@/api/chest/types";
 
-export const initTeamChest = async (payload: IInitTeamChestPayload) => {
+export const initTeamChest = (payload: IInitTeamChestPayload) => {
   return post<IApiResponse<IChestInfo>>("/chest/team/init", payload);
 };
 
-export const getTeamChestDetail = async (teamId: string) => {
-  const encodedTeamId = encodeURIComponent(teamId);
-  return post<IApiResponse<IChestInfo>>(
-    `/chest/team/detail?teamId=${encodedTeamId}`
-  );
+export const getTeamChestDetail = (teamId: string) => {
+  return post<IApiResponse<IChestInfo>>(`/chest/team/detail?teamId=${encodeURIComponent(teamId)}`);
 };
 
-export const joinTeamChest = async (payload: IJoinTeamChestPayload) => {
+export const joinTeamChest = (payload: IJoinTeamChestPayload) => {
   return post<IApiResponse<null>>("/chest/team/join", payload);
 };
 
-export const getTeamChestHistory = async () => {
+export const getTeamChestHistory = () => {
   return post<IApiResponse<ITeamHistoryItem[]>>("/chest/team/history");
 };

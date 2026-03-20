@@ -1,5 +1,5 @@
 export const summaryAssets = {
-  back: new URL("../../../../assets/back-btn.png", import.meta.url).href,
+  back: new URL("../../../../assets/back-button.png", import.meta.url).href,
 };
 
 export const summaryText = {

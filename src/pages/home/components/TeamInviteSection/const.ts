@@ -1,5 +1,5 @@
 export const inviteAssets = {
-  background: new URL("../../../../assets/prize-module-bg.png", import.meta.url).href,
+  background: new URL("../../../../assets/prize-module-background.png", import.meta.url).href,
   icon: new URL("../../../../assets/first-prize.png", import.meta.url).href,
 };
 

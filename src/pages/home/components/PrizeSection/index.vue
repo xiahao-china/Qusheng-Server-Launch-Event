@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { actionButtons, prizeAssets, prizeList } from "./const";
-import "./index.less";
-</script>
-
 <template>
   <section class="prize-section">
     <div class="prize-platform">
@@ -20,3 +15,8 @@ import "./index.less";
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { actionButtons, prizeAssets, prizeList } from "./const";
+import "./index.less";
+</script>

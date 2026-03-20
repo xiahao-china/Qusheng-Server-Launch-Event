@@ -31,13 +31,13 @@ export const prizeList: IPrizeItem[] = [
   {
     id: 4,
     name: "Apple Watch Ultra",
-    image: new URL("../../../../assets/other-prize-1.png", import.meta.url).href,
+    image: new URL("../../../../assets/other-prize-one.png", import.meta.url).href,
     badge: "幸运奖",
   },
   {
     id: 5,
     name: "AirPods Max",
-    image: new URL("../../../../assets/other-prize-2.png", import.meta.url).href,
+    image: new URL("../../../../assets/other-prize-two.png", import.meta.url).href,
     badge: "幸运奖",
   },
 ];

@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { summaryAssets, summaryText } from "./const";
-import "./index.less";
-</script>
-
 <template>
   <section class="team-summary">
     <button class="arrow-btn" type="button">
@@ -18,3 +13,8 @@ import "./index.less";
     </button>
   </section>
 </template>
+
+<script setup lang="ts">
+import { summaryAssets, summaryText } from "./const";
+import "./index.less";
+</script>

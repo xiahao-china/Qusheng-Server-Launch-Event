@@ -6,9 +6,9 @@ export interface IRankItem {
 }
 
 export const rankAssets = {
-  boardBg: new URL("../../../../assets/ranking-bg.png", import.meta.url).href,
-  firstRowBg: new URL("../../../../assets/first-place-bg.png", import.meta.url).href,
-  normalRowBg: new URL("../../../../assets/other-rank-bg.png", import.meta.url).href,
+  boardBg: new URL("../../../../assets/ranking-background.png", import.meta.url).href,
+  firstRowBg: new URL("../../../../assets/first-place-background.png", import.meta.url).href,
+  normalRowBg: new URL("../../../../assets/other-rank-background.png", import.meta.url).href,
   diamond: new URL("../../../../assets/diamond.png", import.meta.url).href,
   rank1: new URL("../../../../assets/rank-1.png", import.meta.url).href,
   rank2: new URL("../../../../assets/rank-2.png", import.meta.url).href,
