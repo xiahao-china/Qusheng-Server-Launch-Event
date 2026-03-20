@@ -25,7 +25,7 @@ import type { HeroMode } from "./components/HeroSection/const";
 import type { ActivityPopupType } from "./components/ActivityPopup/const";
 import { homeTheme } from "./const";
 
-const currentMode = ref<HeroMode>("team-charge");
+const currentMode = ref<HeroMode>("million-checkin");
 const visiblePopup = ref<ActivityPopupType | null>(null);
 
 const handleModeChange = (mode: HeroMode) => {
