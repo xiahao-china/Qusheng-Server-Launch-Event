@@ -177,7 +177,7 @@ const rankDisplayList = computed<IRankItem[]>(() => {
 });
 
 const resolveApiResult = <T>(response: { code: number; msg: string; data: T }) => {
-  if (response.code !== 0) {
+  if (response.code !== 200) {
     throw new Error(response.msg || "请求失败");
   }
   return response.data;
