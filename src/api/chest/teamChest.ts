@@ -42,6 +42,7 @@ export const getTeamChestDetail = (teamId: string): Promise<IApiResponse<IChestI
   return Promise.resolve({
     code: 200,
     msg: "success",
+      data: null,
     data: {
       chestActivityId: 2,
       chestId: "team-chest-1",

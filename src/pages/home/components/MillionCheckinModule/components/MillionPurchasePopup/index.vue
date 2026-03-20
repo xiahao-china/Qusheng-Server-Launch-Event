@@ -99,5 +99,8 @@ const handlePlus = () => {
   localQuantity.value += 1;
 };
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

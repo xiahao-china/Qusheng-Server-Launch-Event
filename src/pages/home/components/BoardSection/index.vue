@@ -1,7 +1,7 @@
 <template>
   <section class="million-rank">
     <div class="million-rank-bg-shell">
-      <img class="million-rank-bg" :src="millionCheckinAssets.panelBackground" alt="排行背景" />
+      <img class="million-rank-bg" :src="panelBackground" alt="排行背景" />
     </div>
     <div class="million-rank-content">
       <div class="million-rank-title-wrap">
@@ -24,15 +24,15 @@
       <p v-if="!props.rankList.length" class="million-rank-empty">暂无排行数据</p>
     </div>
     <div class="million-rank-bg-shell bottom">
-      <img class="million-rank-bg" :src="millionCheckinAssets.panelBackground" alt="排行背景" />
+      <img class="million-rank-bg" :src="panelBackground" alt="排行背景" />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { millionCheckinAssets } from "../../const";
+import panelBackground from "@/assets/ranking-background.png";
 
-interface IMillionRankDisplayItem {
+export interface IBoardDisplayItem {
   id: number;
   name: string;
   value: number;
@@ -40,8 +40,11 @@ interface IMillionRankDisplayItem {
 }
 
 const props = defineProps<{
-  rankList: IMillionRankDisplayItem[];
+  rankList: IBoardDisplayItem[];
 }>();
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

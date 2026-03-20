@@ -1,0 +1,198 @@
+.activity-popup-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: rgba(0, 0, 0, 0.68);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+
+  .initiate-popup-panel {
+    position: relative;
+    width: min(100%, 360px);
+    height: 520px;
+
+    .activity-popup-bg-shell {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      overflow: hidden;
+      height: 50%;
+
+      .activity-popup-bg {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        object-fit: contain;
+      }
+
+      &.bottom {
+        top: initial;
+        bottom: 0;
+
+        .activity-popup-bg {
+          top: initial;
+          bottom: 0;
+        }
+      }
+    }
+
+    .activity-popup-content {
+      position: relative;
+      margin: 12px 12px 14px;
+      z-index: 2;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 225, 115, 0.5);
+      padding: 6px 14px 18px;
+      text-align: center;
+      color: #ffe95f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: calc(100% - 26px);
+
+      .activity-popup-title-wrap {
+        position: relative;
+        display: flex;
+        margin-top: -24px;
+        justify-content: center;
+        margin-bottom: 20px;
+
+        .activity-popup-title-bg {
+          width: 250px;
+          display: block;
+        }
+
+        .activity-popup-title {
+          margin: 0;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: #fff;
+          font-size: 16px;
+          font-weight: bold;
+          letter-spacing: 1px;
+          white-space: nowrap;
+          text-shadow: 0px 0px 3px #800775;
+        }
+      }
+
+      .initiate-reward-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px 8px;
+        width: 100%;
+        margin-bottom: auto;
+        overflow-y: auto;
+        padding: 4px;
+      }
+
+      .million-reward-card {
+        border-radius: 12px;
+        background: transparent;
+        border: 2px solid transparent;
+        padding: 4px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &.selected {
+          border-color: #ffe95f;
+          background: rgba(255, 233, 95, 0.1);
+        }
+
+        .million-reward-image-shell{
+          width: 70px;
+          height: 70px;
+          position: relative;
+          z-index: 2;
+          .million-reward-image {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+          }
+        }
+
+        .million-reward-platform {
+          width: 76px;
+          margin-top: -15px;
+          pointer-events: none;
+          position: relative;
+          z-index: 1;
+
+          img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          }
+
+          .million-reward-name {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 25px;
+            margin: 0;
+            font-weight: 700;
+            font-size: 8px;
+            color: #fff;
+            line-height: 1.1;
+            background: linear-gradient(270deg, #F7BBFF 0%, #FFFFFF 48%, #FFEF9F 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            transform: scale(0.9);
+          }
+        }
+      }
+
+      .rename-action-row {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .rename-action-btn {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        position: relative;
+        width: 115px;
+
+        img {
+          width: 100%;
+          object-fit: fill;
+          display: block;
+        }
+
+        .text {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 16px;
+          color: white;
+        }
+
+        &:active {
+          transform: scale(0.96);
+        }
+      }
+    }
+  }
+}

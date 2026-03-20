@@ -1,22 +1,65 @@
 <template>
   <section class="team-charge-module">
-    <PrizeSection :prize-list="teamPrizeList" :action-buttons="actionButtons" @action="handleAction" />
-    <TeamSummarySection
-      :title="summaryTitle"
-      :count="summaryCount"
-      :unit="summaryUnit"
-      :can-prev="canPrevHistory"
-      :can-next="canNextHistory"
-      @prev="showPrevHistory"
-      @next="showNextHistory"
-    />
-    <TeamInviteSection
-      :title="inviteTitle"
-      :description="inviteDescription"
-      :button-text="inviteButtonText"
+    <NoticeSection :notice-text-list="noticeTextList" />
+    <TeamQualificationSection
+      v-if="moduleStatus === TeamModuleStatus.NoQualification"
+      :mount-config="teamMountConfig"
       @action="handleInviteAction"
     />
-    <RankSection :rank-list="rankDisplayList" />
+    <TeamInitiateSection
+      v-else-if="moduleStatus === TeamModuleStatus.Opened || teamChestInfo?.status !== 1"
+      :team-name="teamInfo?.teamName || '我的战队'"
+      :user-name="teamInfo?.teamName?.replace('战队', '') || '战队长'"
+      @rename="renameCurrentTeam"
+      @initiate="initTeamChestWithDefault"
+    />
+    <TeamTaskSection
+      v-else
+      :team-name="teamInfo?.teamName || '我的战队'"
+      :user-name="teamInfo?.teamName?.replace('战队', '') || '战队长'"
+      :contribution="teamChestInfo?.currentParticipationCount ?? 0"
+      :reward-list="teamPrizeList"
+      :dress-up-list="millionDressUpList"
+      :progress-percent="progressPercent"
+      :is-joining="operating"
+      :chest-status="teamChestInfo?.status ?? 0"
+      @rename="renameCurrentTeam"
+      @show-rule="() => {}"
+      @show-records="showRecords"
+      @share="handleShare"
+      @purchase="handlePurchaseDressUp"
+      @join="joinCurrentTeamChest"
+      @click-prize="openAddressPopup"
+    />
+    <LuckySection :lucky-list="luckyList" />
+    <BoardSection :rank-list="rankDisplayList" />
+    <ServerLaunchMountPopup
+      v-if="mountPopupVisible"
+      @close="closeMountPopup"
+      @success="handleMountSuccess"
+    />
+    <RenameTeamPopup
+      v-if="renamePopupVisible"
+      :initial-name="teamInfo?.teamName || ''"
+      @close="closeRenamePopup"
+      @confirm="handleRenameConfirm"
+    />
+    <InitiateActivityPopup
+      v-if="initiatePopupVisible"
+      title="选择您想发起的活动一等奖"
+      @close="closeInitiatePopup"
+      @confirm="handleInitiateConfirm"
+    />
+    <SharePopup
+      v-if="sharePopupVisible"
+      :team-id="String(teamInfo?.teamId || '')"
+      @close="closeSharePopup"
+    />
+    <AddressPopup
+      v-if="addressPopupVisible"
+      @close="closeAddressPopup"
+      @confirm="handleAddressConfirm"
+    />
   </section>
 </template>
 
@@ -24,33 +67,61 @@
 import { computed, onMounted, ref } from "vue";
 import { showToast } from "vant";
 import { getUserRecordList } from "@/api/chest/record";
-import { createTeam, getTeamMountConfig, getTeamQualificationInfo, renameTeam } from "@/api/chest/team";
+import { getTeamMountConfig, getTeamQualificationInfo, renameTeam } from "@/api/chest/team";
 import { getTeamChestDetail, getTeamChestHistory, initTeamChest, joinTeamChest } from "@/api/chest/teamChest";
 import type { IChestInfo, ITeamHistoryItem, ITeamMountConfig, ITeamQualificationInfo, IUserRecordItem } from "@/api/chest/types";
-import PrizeSection from "../PrizeSection/index.vue";
-import RankSection from "../RankSection/index.vue";
-import TeamInviteSection from "../TeamInviteSection/index.vue";
-import TeamSummarySection from "../TeamSummarySection/index.vue";
-import { prizeList as prizeFallbackList } from "../PrizeSection/const";
-import { rankAssets, type IRankItem } from "../RankSection/const";
+import NoticeSection from "../NoticeSection/index.vue";
+import BoardSection from "../BoardSection/index.vue";
+import type { IBoardDisplayItem } from "../BoardSection/index.vue";
+import TeamQualificationSection from "../TeamQualificationSection/index.vue";
+import TeamInitiateSection from "../TeamInitiateSection/index.vue";
+import TeamTaskSection from "../TeamTaskSection/index.vue";
+import ServerLaunchMountPopup from "../ServerLaunchMountPopup/index.vue";
+import RenameTeamPopup from "../RenameTeamPopup/index.vue";
+import InitiateActivityPopup from "../InitiateActivityPopup/index.vue";
+import SharePopup from "../SharePopup/index.vue";
+import AddressPopup from "../AddressPopup/index.vue";
+import LuckySection from "../LuckySection/index.vue";
+import type { ILuckyDisplayItem } from "../LuckySection/index.vue";
+import { millionAvatarFallbacks, millionDressUpList, millionPrizeFallbackList } from "../MillionCheckinModule/const";
+
+enum TeamModuleStatus {
+  NoQualification = "no-qualification",
+  Opened = "opened",
+  Initiated = "initiated",
+}
 
 const teamInfo = ref<ITeamQualificationInfo | null>(null);
 const teamMountConfig = ref<ITeamMountConfig | null>(null);
 const teamChestInfo = ref<IChestInfo | null>(null);
 const historyList = ref<ITeamHistoryItem[]>([]);
 const selectedHistoryIndex = ref(0);
+const mountPopupVisible = ref(false);
+const renamePopupVisible = ref(false);
+const initiatePopupVisible = ref(false);
+const sharePopupVisible = ref(false);
+const addressPopupVisible = ref(false);
+
+const moduleStatus = computed<TeamModuleStatus>(() => {
+  if (!teamInfo.value?.hasTeam) {
+    return TeamModuleStatus.NoQualification;
+  }
+  if (!teamChestInfo.value) {
+    return TeamModuleStatus.Opened;
+  }
+  return TeamModuleStatus.Initiated;
+});
 
 const loading = ref(false);
 const operating = ref(false);
 
-const actionButtons = computed(() => {
-  if (!teamInfo.value?.hasTeam) {
-    return ["开通战队", "刷新信息", "我的记录"];
+const noticeTextList = computed(() => {
+  if (!teamChestInfo.value?.participants.length) {
+    return ["暂无最新战队打卡动态"];
   }
-  if (teamChestInfo.value?.status === 1) {
-    return ["参与战队宝箱", "发起战队宝箱", "历史宝箱"];
-  }
-  return ["发起战队宝箱", "刷新宝箱", "历史宝箱"];
+  return teamChestInfo.value.participants.map((participant) => {
+    return `${participant.userName} 参与${participant.quantity}次战队宝箱`;
+  });
 });
 
 const currentHistoryItem = computed(() => {
@@ -64,15 +135,15 @@ const teamPrizeList = computed(() => {
   if (teamChestInfo.value) {
     return [
       {
-        ...prizeFallbackList[0],
+        ...millionPrizeFallbackList[0],
         name: `奖品ID ${teamChestInfo.value.firstPrizeItemId} x${teamChestInfo.value.firstPrizeQuantity}`,
       },
       {
-        ...prizeFallbackList[1],
+        ...millionPrizeFallbackList[1],
         name: `奖品ID ${teamChestInfo.value.secondPrizeItemId} x${teamChestInfo.value.secondPrizeQuantity}`,
       },
       {
-        ...prizeFallbackList[2],
+        ...millionPrizeFallbackList[2],
         name: `奖品ID ${teamChestInfo.value.thirdPrizeItemId} x${teamChestInfo.value.thirdPrizeQuantity}`,
       },
     ];
@@ -80,99 +151,77 @@ const teamPrizeList = computed(() => {
   if (currentHistoryItem.value) {
     return [
       {
-        ...prizeFallbackList[0],
+        ...millionPrizeFallbackList[0],
         name: `${currentHistoryItem.value.firstPrizeName} x${currentHistoryItem.value.firstPrizeQuantity}`,
       },
       {
-        ...prizeFallbackList[1],
+        ...millionPrizeFallbackList[1],
         name: `${currentHistoryItem.value.secondPrizeName} x${currentHistoryItem.value.secondPrizeQuantity}`,
       },
       {
-        ...prizeFallbackList[2],
+        ...millionPrizeFallbackList[2],
         name: `${currentHistoryItem.value.thirdPrizeName} x${currentHistoryItem.value.thirdPrizeQuantity}`,
       },
     ];
   }
-  return prizeFallbackList;
+  return millionPrizeFallbackList;
 });
 
-const summaryTitle = computed(() => {
-  if (teamInfo.value?.hasTeam && teamInfo.value.teamName) {
-    return `战队${teamInfo.value.teamName}历史宝箱`;
+const progressPercent = computed(() => {
+  if (!teamChestInfo.value || teamChestInfo.value.totalOpenTimes <= 0) {
+    return 0;
   }
-  return "当前可开通";
+  const rawValue = (teamChestInfo.value.currentParticipationCount / teamChestInfo.value.totalOpenTimes) * 100;
+  return Math.max(0, Math.min(rawValue, 100));
 });
 
-const summaryCount = computed(() => {
-  if (historyList.value.length) {
-    return selectedHistoryIndex.value + 1;
+const luckyList = computed<ILuckyDisplayItem[]>(() => {
+  if (!teamChestInfo.value && !currentHistoryItem.value) {
+    return [];
   }
-  if (teamInfo.value?.hasTeam) {
-    return teamChestInfo.value?.currentParticipationCount ?? 0;
-  }
-  return teamMountConfig.value?.price ?? 0;
+  
+  const status = teamChestInfo.value ? teamChestInfo.value.status : currentHistoryItem.value?.status;
+  const singleParticipationAmount = teamChestInfo.value ? teamChestInfo.value.singleParticipationAmount : 0;
+  
+  const winnerUserIds = teamChestInfo.value ? [
+    teamChestInfo.value.result?.firstPrizeUserId ?? "",
+    teamChestInfo.value.result?.secondPrizeUserId ?? "",
+    teamChestInfo.value.result?.thirdPrizeUserId ?? "",
+  ] : [
+    currentHistoryItem.value?.firstPrizeUserId ?? "",
+    currentHistoryItem.value?.secondPrizeUserId ?? "",
+    currentHistoryItem.value?.thirdPrizeUserId ?? "",
+  ];
+
+  return teamPrizeList.value.map((item, index) => ({
+    id: index + 1,
+    userName: status === 2 ? winnerUserIds[index] || "未知用户" : "开奖中",
+    value: singleParticipationAmount,
+    prize: item.name,
+  }));
 });
 
-const summaryUnit = computed(() => {
-  if (historyList.value.length) {
-    return `/ ${historyList.value.length}`;
-  }
-  if (teamInfo.value?.hasTeam) {
-    return "次参与";
-  }
-  return "GGD";
-});
-
-const canPrevHistory = computed(() => historyList.value.length > 1 && selectedHistoryIndex.value > 0);
-const canNextHistory = computed(
-  () => historyList.value.length > 1 && selectedHistoryIndex.value < historyList.value.length - 1
-);
-
-const inviteTitle = computed(() => {
-  if (!teamInfo.value?.hasTeam) {
-    return "战队集结令";
-  }
-  return teamInfo.value.teamName || "我的战队";
-});
-
-const inviteDescription = computed(() => {
-  if (!teamInfo.value?.hasTeam) {
-    if (!teamMountConfig.value) {
-      return "开通战队后可发起战队宝箱";
-    }
-    return `开通需要坐骑：${teamMountConfig.value.mountName}（${teamMountConfig.value.price} GGD）`;
-  }
-  if (!teamChestInfo.value) {
-    return "暂无进行中的战队宝箱，点击按钮可发起";
-  }
-  return `当前进度 ${teamChestInfo.value.currentParticipationCount}/${teamChestInfo.value.totalOpenTimes}`;
-});
-
-const inviteButtonText = computed(() => {
-  if (!teamInfo.value?.hasTeam) {
-    return "立即开通战队";
-  }
-  return "修改战队名称";
-});
-
-const rankDisplayList = computed<IRankItem[]>(() => {
+const rankDisplayList = computed<IBoardDisplayItem[]>(() => {
   if (!teamChestInfo.value?.participants.length) {
     return [];
   }
-  const rankIconMap = [rankAssets.rank1, rankAssets.rank2, rankAssets.rank3, rankAssets.rank4, rankAssets.rank5];
   const contributionMap = new Map<string, number>();
   teamChestInfo.value.participants.forEach((item) => {
     const current = contributionMap.get(item.userName) ?? 0;
     contributionMap.set(item.userName, current + item.unitPrice * item.quantity);
   });
   return Array.from(contributionMap.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
     .map(([userName, contribution], index) => ({
       id: index + 1,
-      userName,
-      contribution,
-      rankIcon: rankIconMap[index] ?? rankAssets.rank5,
+      name: userName,
+      value: contribution,
+      avatars: [millionAvatarFallbacks[index % millionAvatarFallbacks.length]],
+    }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 5)
+    .map((item, index) => ({
+      ...item,
+      id: index + 1,
     }));
 });
 
@@ -195,7 +244,7 @@ const loadMountConfig = async () => {
 
 const loadTeamChestDetail = async () => {
   const teamId = teamInfo.value?.teamId;
-  if (!teamInfo.value?.hasTeam || !teamId) {
+  if (moduleStatus.value === TeamModuleStatus.NoQualification || !teamId) {
     teamChestInfo.value = null;
     return;
   }
@@ -204,7 +253,7 @@ const loadTeamChestDetail = async () => {
 };
 
 const loadTeamHistory = async () => {
-  if (!teamInfo.value?.hasTeam) {
+  if (moduleStatus.value === TeamModuleStatus.NoQualification) {
     historyList.value = [];
     selectedHistoryIndex.value = 0;
     return;
@@ -221,7 +270,7 @@ const loadTeamModuleData = async () => {
   loading.value = true;
   try {
     await loadTeamInfo();
-    if (!teamInfo.value?.hasTeam) {
+    if (moduleStatus.value === TeamModuleStatus.NoQualification) {
       await loadMountConfig();
       historyList.value = [];
       teamChestInfo.value = null;
@@ -236,42 +285,41 @@ const loadTeamModuleData = async () => {
   }
 };
 
+const closeMountPopup = () => {
+  mountPopupVisible.value = false;
+};
+
+const handleMountSuccess = async () => {
+  mountPopupVisible.value = false;
+  await loadTeamModuleData();
+};
+
 const createTeamAndRefresh = async () => {
   if (operating.value) {
     return;
   }
-  operating.value = true;
-  try {
-    const response = await createTeam();
-    teamInfo.value = resolveApiResult(response);
-    showToast("开通战队成功");
-    await loadTeamModuleData();
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "开通战队失败";
-    showToast(message);
-  } finally {
-    operating.value = false;
-  }
+  mountPopupVisible.value = true;
 };
 
 const renameCurrentTeam = async () => {
-  if (!teamInfo.value?.hasTeam || operating.value) {
+  if (moduleStatus.value === TeamModuleStatus.NoQualification || operating.value) {
     return;
   }
-  const nextName = window.prompt("请输入新的战队名称（1-20个字符）", teamInfo.value.teamName || "");
-  if (!nextName) {
-    return;
-  }
-  const trimmedName = nextName.trim();
-  if (!trimmedName || trimmedName.length > 20) {
-    showToast("战队名称需为1-20个字符");
-    return;
-  }
+  renamePopupVisible.value = true;
+};
+
+const closeRenamePopup = () => {
+  renamePopupVisible.value = false;
+};
+
+const handleRenameConfirm = async (newName: string) => {
+  if (operating.value) return;
   operating.value = true;
   try {
-    const response = await renameTeam({ teamName: trimmedName });
+    const response = await renameTeam({ teamName: newName });
     resolveApiResult(response);
     showToast("战队名称修改成功");
+    renamePopupVisible.value = false;
     await loadTeamInfo();
   } catch (error) {
     const message = error instanceof Error ? error.message : "修改战队名称失败";
@@ -282,13 +330,44 @@ const renameCurrentTeam = async () => {
 };
 
 const initTeamChestWithDefault = async () => {
-  if (!teamInfo.value?.hasTeam || operating.value) {
+  if (moduleStatus.value === TeamModuleStatus.NoQualification || operating.value) {
     return;
   }
+  initiatePopupVisible.value = true;
+};
+
+const closeInitiatePopup = () => {
+  initiatePopupVisible.value = false;
+};
+
+const handleShare = () => {
+  sharePopupVisible.value = true;
+};
+
+const closeSharePopup = () => {
+  sharePopupVisible.value = false;
+};
+
+const openAddressPopup = () => {
+  addressPopupVisible.value = true;
+};
+
+const closeAddressPopup = () => {
+  addressPopupVisible.value = false;
+};
+
+const handleAddressConfirm = (addressInfo: { name: string; phone: string; address: string }) => {
+  console.log("Address submitted:", addressInfo);
+  showToast("地址提交成功");
+  addressPopupVisible.value = false;
+};
+
+const handleInitiateConfirm = async (prizeId: number) => {
+  if (operating.value) return;
   operating.value = true;
   try {
     const response = await initTeamChest({
-      firstPrizeItemId: 1,
+      firstPrizeItemId: prizeId,
       firstPrizeQuantity: 1,
       secondPrizeItemId: 2,
       secondPrizeQuantity: 1,
@@ -299,6 +378,7 @@ const initTeamChestWithDefault = async () => {
     });
     teamChestInfo.value = resolveApiResult(response);
     showToast("战队宝箱发起成功");
+    initiatePopupVisible.value = false;
     await loadTeamHistory();
   } catch (error) {
     const message = error instanceof Error ? error.message : "发起战队宝箱失败";
@@ -309,11 +389,11 @@ const initTeamChestWithDefault = async () => {
 };
 
 const joinCurrentTeamChest = async () => {
-  if (!teamInfo.value?.hasTeam || !teamInfo.value.teamId || !teamChestInfo.value || operating.value) {
+  if (moduleStatus.value !== TeamModuleStatus.Initiated || !teamInfo.value?.teamId || operating.value) {
     showToast("当前暂无可参与的战队宝箱");
     return;
   }
-  if (teamChestInfo.value.status !== 1) {
+  if (teamChestInfo.value?.status !== 1) {
     showToast("当前宝箱不可参与");
     return;
   }
@@ -349,7 +429,7 @@ const buildHistoryText = (items: ITeamHistoryItem[]) => {
 
 const showHistory = async () => {
   try {
-    if (!historyList.value.length && teamInfo.value?.hasTeam) {
+    if (!historyList.value.length && moduleStatus.value !== TeamModuleStatus.NoQualification) {
       await loadTeamHistory();
     }
     showToast({
@@ -385,57 +465,24 @@ const showRecords = async () => {
   }
 };
 
-const handleAction = async (action: string) => {
-  if (action === "开通战队") {
-    await createTeamAndRefresh();
-    return;
-  }
-  if (action === "刷新信息" || action === "刷新宝箱") {
-    await loadTeamModuleData();
-    return;
-  }
-  if (action === "我的记录") {
-    await showRecords();
-    return;
-  }
-  if (action === "参与战队宝箱") {
-    await joinCurrentTeamChest();
-    return;
-  }
-  if (action === "发起战队宝箱") {
-    await initTeamChestWithDefault();
-    return;
-  }
-  if (action === "历史宝箱") {
-    await showHistory();
-  }
-};
-
 const handleInviteAction = async () => {
-  if (!teamInfo.value?.hasTeam) {
+  if (moduleStatus.value === TeamModuleStatus.NoQualification) {
     await createTeamAndRefresh();
     return;
   }
-  await renameCurrentTeam();
 };
 
-const showPrevHistory = () => {
-  if (!canPrevHistory.value) {
-    return;
-  }
-  selectedHistoryIndex.value -= 1;
-};
-
-const showNextHistory = () => {
-  if (!canNextHistory.value) {
-    return;
-  }
-  selectedHistoryIndex.value += 1;
+const handlePurchaseDressUp = (dressUpItemId: number) => {
+  // handle purchase dress up for team task
+  // similar logic as MillionCheckinModule
 };
 
 onMounted(() => {
   loadTeamModuleData();
 });
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

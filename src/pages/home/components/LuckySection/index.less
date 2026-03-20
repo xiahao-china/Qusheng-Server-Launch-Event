@@ -44,12 +44,12 @@
       position: relative;
       display: flex;
       justify-content: center;
-      margin-top: -20px;
+      margin-bottom: 10px;
 
       .million-rank-title {
         width: 100%;
         position: relative;
-        margin-top: 8px;
+        margin-top: -12px;
         z-index: 2;
         justify-content: center;
         font-family: HarmonyOS Sans SC;
@@ -58,6 +58,7 @@
         line-height: normal;
         text-align: center;
         letter-spacing: 0em;
+        background: linear-gradient(180deg, #47257E 0%, rgba(100, 87, 0, 0.7) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -65,16 +66,21 @@
       }
     }
 
-    .million-board-header {
-      display: grid;
+    .million-lucky-header {
+      display: flex;
+      justify-content: space-between;
       color: #fff;
       font-weight: 700;
       font-size: 12px;
       margin-bottom: 6px;
-      grid-template-columns: 46px 1fr 84px 74px;
 
       span {
+        flex: 1;
         text-align: center;
+        
+        &:first-child {
+          text-align: left;
+        }
         
         &:last-child {
           text-align: right;
@@ -82,47 +88,29 @@
       }
     }
 
-    .million-board-row {
-      height: 40px;
+    .million-lucky-row {
+      height: 38px;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.08);
-      display: grid;
-      grid-template-columns: 46px 1fr 84px 74px;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
       padding: 0 10px;
       font-size: 12px;
       margin-bottom: 6px;
 
       span {
+        flex: 1;
         text-align: center;
-      }
-
-      .million-board-rank {
-        color: #ffe27a;
-        font-weight: 700;
-      }
-
-      .million-board-name {
-        font-weight: 700;
-      }
-
-      .million-board-value {
-        color: #ffe27a;
-        font-weight: 700;
-      }
-
-      .million-board-members {
-        display: flex;
-        justify-content: flex-end;
-
-        img {
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          margin-left: -6px;
-          background: #5422aa;
+        
+        &:first-child {
+          text-align: left;
+        }
+        
+        &:last-child {
+          text-align: right;
+          color: #ffe27a;
+          font-weight: 700;
         }
       }
     }

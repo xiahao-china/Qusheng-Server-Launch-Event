@@ -1,0 +1,383 @@
+.team-task-section {
+  margin: 10px 14px 0;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+
+  .team-task-bg-shell {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    overflow: hidden;
+    height: 50%;
+    .team-task-bg {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: contain;
+    }
+    &.bottom {
+      top: initial;
+      bottom: 0;
+      .team-task-bg {
+        top: initial;
+        bottom: 0;
+      }
+    }
+  }
+
+  .team-task-content {
+    position: relative;
+    margin: 10px;
+    z-index: 2;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 12px 10px;
+    color: #fff;
+  }
+
+  .team-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px;
+    margin-bottom: 12px;
+
+    .team-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .team-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #fff;
+        border-bottom: 1px solid #fff;
+        padding-bottom: 2px;
+      }
+
+      .edit-icon {
+        font-size: 12px;
+        cursor: pointer;
+        opacity: 0.8;
+      }
+    }
+
+    .header-links {
+      display: flex;
+      gap: 12px;
+
+      .link-item {
+        font-size: 12px;
+        color: #FFF07A;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .team-info-reward-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    .user-info {
+      width: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+
+      .user-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid #c9a6ff;
+        object-fit: cover;
+        margin-bottom: 4px;
+      }
+
+      .user-name {
+        font-size: 11px;
+        color: #fff;
+        margin-bottom: 10px;
+        text-align: center;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .contribution-label {
+        color: #ffe27a;
+        font-size: 10px;
+      }
+
+      .contribution-value {
+        color: #ffe27a;
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+
+    .reward-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+    }
+
+    .million-reward-card {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+
+      .million-reward-image-shell {
+        width: 60px;
+        height: 60px;
+        position: relative;
+        z-index: 2;
+        .million-reward-image {
+          height: 100%;
+          width: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .million-reward-platform {
+        width: 66px;
+        margin-top: -12px;
+        pointer-events: none;
+        position: relative;
+        z-index: 1;
+
+        img {
+          width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+
+        .million-reward-name {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 22px;
+          margin: 0;
+          font-weight: 700;
+          font-size: 6px;
+          color: #fff;
+          line-height: 1.1;
+          background: linear-gradient(270deg, #F7BBFF 0%, #FFFFFF 48%, #FFEF9F 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-fill-color: transparent;
+          transform: scale(0.85);
+        }
+      }
+
+      .million-reward-label {
+        margin-top: 4px;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .share-btn {
+    width: 100%;
+    height: 38px;
+    border: 0;
+    padding: 0;
+    position: relative;
+    background: transparent;
+    margin-bottom: 16px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      display: block;
+    }
+
+    .text {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .team-task-desc {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 10px;
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    color: #fff;
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .million-task-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .million-task-card {
+    text-align: center;
+  }
+
+  .million-task-image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+
+  .million-task-name {
+    margin: 0 0 6px;
+    font-size: 10px;
+    color: #ffe27a;
+    font-weight: 700;
+  }
+
+  .million-task-buy {
+    width: 60px;
+    height: 26px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    position: relative;
+    margin: 0 auto;
+
+    .text {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      font-size: 10px;
+      color: white;
+    }
+
+    img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+  }
+
+  .million-task-progress {
+    margin-top: 16px;
+    height: 12px;
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .million-task-progress-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.35;
+  }
+
+  .million-task-progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 62%;
+    background: linear-gradient(90deg, #ffd65a, #ffeb9b);
+  }
+
+  .million-task-step-row {
+    margin-top: 4px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    text-align: center;
+    font-size: 9px;
+    color: #ffe27a;
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+
+      .step-icon {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+      }
+    }
+  }
+
+  .action-footer {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    padding: 0 16px;
+  }
+
+  .million-task-action {
+    width: 100%;
+    height: 40px;
+    border: 0;
+    padding: 0;
+    position: relative;
+    background: transparent;
+    .text{
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: fill;
+      border-radius: 8px;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

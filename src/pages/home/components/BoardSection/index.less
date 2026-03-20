@@ -44,7 +44,7 @@
       position: relative;
       display: flex;
       justify-content: center;
-      margin-bottom: 10px;
+      margin-top: -20px;
 
       .million-rank-title {
         width: 100%;
@@ -57,7 +57,7 @@
         font-weight: 600;
         line-height: normal;
         text-align: center;
-        letter-spacing: 0em;
+
         background: linear-gradient(180deg, #47257E 0%, rgba(100, 87, 0, 0.7) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -66,21 +66,16 @@
       }
     }
 
-    .million-lucky-header {
-      display: flex;
-      justify-content: space-between;
+    .million-board-header {
+      display: grid;
       color: #fff;
       font-weight: 700;
       font-size: 12px;
       margin-bottom: 6px;
+      grid-template-columns: 46px 1fr 84px 74px;
 
       span {
-        flex: 1;
         text-align: center;
-        
-        &:first-child {
-          text-align: left;
-        }
         
         &:last-child {
           text-align: right;
@@ -88,29 +83,47 @@
       }
     }
 
-    .million-lucky-row {
-      height: 38px;
+    .million-board-row {
+      height: 40px;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.08);
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 46px 1fr 84px 74px;
       align-items: center;
       padding: 0 10px;
       font-size: 12px;
       margin-bottom: 6px;
 
       span {
-        flex: 1;
         text-align: center;
-        
-        &:first-child {
-          text-align: left;
-        }
-        
-        &:last-child {
-          text-align: right;
-          color: #ffe27a;
-          font-weight: 700;
+      }
+
+      .million-board-rank {
+        color: #ffe27a;
+        font-weight: 700;
+      }
+
+      .million-board-name {
+        font-weight: 700;
+      }
+
+      .million-board-value {
+        color: #ffe27a;
+        font-weight: 700;
+      }
+
+      .million-board-members {
+        display: flex;
+        justify-content: flex-end;
+
+        img {
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          margin-left: -6px;
+          background: #5422aa;
         }
       }
     }

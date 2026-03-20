@@ -1,6 +1,6 @@
 <template>
   <section class="million-checkin">
-    <MillionNoticeSection :notice-text="noticeText" />
+    <NoticeSection :notice-text-list="noticeTextList" />
     <MillionRewardSection :reward-list="rewardList" />
     <MillionTaskSection
       :dress-up-list="millionDressUpList"
@@ -15,8 +15,8 @@
       @show-rule="showRule"
       @show-records="showRecords"
     />
-    <MillionLuckySection :lucky-list="luckyList" />
-    <MillionBoardSection :rank-list="rankList" />
+    <LuckySection :lucky-list="luckyList" />
+    <BoardSection :rank-list="rankList" />
     <MillionPurchasePopup
       v-if="purchasePopupVisible && selectedDressUpItem"
       :dress-up-name="selectedDressUpItem.name"
@@ -38,27 +38,15 @@ import { showToast } from "vant";
 import { getGlobalChestInfo, joinGlobalChest } from "@/api/chest/global";
 import { getUserRecordList } from "@/api/chest/record";
 import type { IChestInfo, IUserRecordItem } from "@/api/chest/types";
-import MillionNoticeSection from "./components/MillionNoticeSection/index.vue";
+import NoticeSection from "../NoticeSection/index.vue";
 import MillionPurchasePopup from "./components/MillionPurchasePopup/index.vue";
-import MillionLuckySection from "./components/MillionLuckySection/index.vue";
-import MillionBoardSection from "./components/MillionBoardSection/index.vue";
+import LuckySection from "../LuckySection/index.vue";
+import type { ILuckyDisplayItem } from "../LuckySection/index.vue";
+import BoardSection from "../BoardSection/index.vue";
+import type { IBoardDisplayItem } from "../BoardSection/index.vue";
 import MillionRewardSection from "./components/MillionRewardSection/index.vue";
 import MillionTaskSection from "./components/MillionTaskSection/index.vue";
 import { millionAvatarFallbacks, millionDefaultNoticeText, millionDressUpList, millionPrizeFallbackList } from "./const";
-
-interface IMillionLuckyDisplayItem {
-  id: number;
-  userName: string;
-  value: number;
-  prize: string;
-}
-
-interface IMillionRankDisplayItem {
-  id: number;
-  name: string;
-  value: number;
-  avatars: string[];
-}
 
 const chestInfo = ref<IChestInfo | null>(null);
 const loading = ref(false);
@@ -113,15 +101,16 @@ const progressPercent = computed(() => {
   return Math.max(0, Math.min(rawValue, 100));
 });
 
-const noticeText = computed(() => {
+const noticeTextList = computed(() => {
   if (!chestInfo.value?.participants.length) {
-    return millionDefaultNoticeText;
+    return [millionDefaultNoticeText];
   }
-  const latestParticipant = chestInfo.value.participants[chestInfo.value.participants.length - 1];
-  return `${latestParticipant.userName} 购买${latestParticipant.quantity}次并成功打卡`;
+  return chestInfo.value.participants.map((participant) => {
+    return `${participant.userName} 购买${participant.quantity}次并成功打卡`;
+  });
 });
 
-const luckyList = computed<IMillionLuckyDisplayItem[]>(() => {
+const luckyList = computed<ILuckyDisplayItem[]>(() => {
   const winnerUserIds = [
     chestInfo.value?.result?.firstPrizeUserId ?? "",
     chestInfo.value?.result?.secondPrizeUserId ?? "",
@@ -135,7 +124,7 @@ const luckyList = computed<IMillionLuckyDisplayItem[]>(() => {
   }));
 });
 
-const rankList = computed<IMillionRankDisplayItem[]>(() => {
+const rankList = computed<IBoardDisplayItem[]>(() => {
   if (!chestInfo.value?.participants.length) {
     return [];
   }
@@ -269,5 +258,8 @@ const showRecords = () => {
 onMounted(() => {
   loadGlobalChestInfo();
 });
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

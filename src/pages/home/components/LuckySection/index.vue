@@ -26,9 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { millionCheckinAssets } from "../../const";
+import { millionCheckinAssets } from "../MillionCheckinModule/const";
 
-interface IMillionLuckyDisplayItem {
+export interface ILuckyDisplayItem {
   id: number;
   userName: string;
   value: number;
@@ -36,8 +36,11 @@ interface IMillionLuckyDisplayItem {
 }
 
 const props = defineProps<{
-  luckyList: IMillionLuckyDisplayItem[];
+  luckyList: ILuckyDisplayItem[];
 }>();
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

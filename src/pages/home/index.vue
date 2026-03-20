@@ -43,5 +43,8 @@ const closePopup = () => {
   visiblePopup.value = null;
 };
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

@@ -87,5 +87,8 @@ const emitClose = () => {
   emit("close");
 };
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

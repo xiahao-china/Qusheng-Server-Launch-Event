@@ -55,5 +55,8 @@ const handleModeChange = (mode: HeroMode) => {
   emit("mode-change", mode);
 };
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

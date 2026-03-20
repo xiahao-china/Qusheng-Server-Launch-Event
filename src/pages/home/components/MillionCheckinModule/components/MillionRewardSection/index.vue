@@ -34,5 +34,8 @@ const props = defineProps<{
   rewardList: IMillionPrizeDisplayItem[];
 }>();
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>

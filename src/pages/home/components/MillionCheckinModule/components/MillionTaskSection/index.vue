@@ -69,5 +69,8 @@ const quantity = ref(1);
 
 const steps = ["25%", "50%", "75%", "100%"];
 
-import "./index.less";
 </script>
+
+<style lang="less" scoped>
+@import "./index.less";
+</style>
