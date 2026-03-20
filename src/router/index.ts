@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 // 2. 定义一些路由
 const routes = [
-  { path: '/', component: () => import('../pages/home.vue') },
+  { path: '/', component: () => import('../pages/home/index.vue') },
 ]
 
 // 3. 创建路由实例并传递 `routes` 配置
