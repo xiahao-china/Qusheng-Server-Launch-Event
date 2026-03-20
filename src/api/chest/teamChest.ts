@@ -6,7 +6,7 @@ export const initTeamChest = (payload: IInitTeamChestPayload) => {
 };
 
 export const getTeamChestDetail = (teamId: string) => {
-  return post<IApiResponse<IChestInfo>>(`/chest/team/detail?teamId=${encodeURIComponent(teamId)}`);
+  return post<IApiResponse<IChestInfo | null>>(`/chest/team/detail?teamId=${encodeURIComponent(teamId)}`);
 };
 
 export const joinTeamChest = (payload: IJoinTeamChestPayload) => {

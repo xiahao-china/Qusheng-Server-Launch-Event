@@ -3,7 +3,6 @@
     <img class="million-reward-bg" :src="millionCheckinAssets.panelBackground" alt="奖励背景" />
     <div class="million-reward-content">
       <div class="million-reward-title-wrap">
-        <img class="million-reward-title-bg" :src="millionCheckinAssets.titleBackground" alt="标题背景" />
         <h3 class="million-reward-title">参与打卡得奖励</h3>
       </div>
       <div class="million-reward-grid">
