@@ -350,8 +350,9 @@
 | secondPrizeQuantity | Integer | 是 | 二等奖数量 |
 | thirdPrizeItemId | Long | 是 | 三等奖奖品ID |
 | thirdPrizeQuantity | Integer | 是 | 三等奖数量 |
-| totalPrizeAmount | BigDecimal | 是 | 宝箱奖品总金额（元） |
-| singleParticipationAmount | BigDecimal | 是 | 单次参与金额（元） |
+
+[//]: # (| totalPrizeAmount | BigDecimal | 是 | 宝箱奖品总金额（元） |)
+[//]: # (| singleParticipationAmount | BigDecimal | 是 | 单次参与金额（元） |)
 
 **请求示例：**
 ```json
@@ -368,6 +369,7 @@
 ```
 
 **响应 data：** 宝箱活动对象（同获取宝箱信息的 data 结构）
+限定礼物计算结果
 
 ---
 
@@ -375,7 +377,7 @@
 
 `POST /chest/team/info`
 
-> 注意：此接口与"获取战队资格信息"路径不同，通过 Query 参数区分。
+> 注意：此接口与"获取战队资格信息"路径不同，通过 Query 参数区分, 不传id查自己的，拿status状态判断有没有开启活动。
 
 `POST /chest/team/detail?teamId=2001`
 

@@ -2,7 +2,6 @@
   position: relative;
   width: 100%;
   padding-bottom: 32px;
-  margin-bottom: 42px;
   text-align: center;
 
   .hero-back-btn {
@@ -24,29 +23,24 @@
 
   .hero-mode-group {
     position: absolute;
-    bottom: 0;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
     z-index: 2;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    &.hero-mode-group-left {
-      left: 12px;
-    }
-
-    &.hero-mode-group-right {
-      right: 12px;
-    }
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
 
     .hero-mode-btn {
-      width: 98px;
+      width: 108px;
       border: 0;
       padding: 0;
       background: transparent;
       transition: transform 0.2s ease;
 
       &.is-active {
-        transform: scale(1.03);
+
       }
 
       img {

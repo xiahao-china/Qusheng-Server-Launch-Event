@@ -34,6 +34,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { showToast } from "vant";
+import { renameTeam } from "@/api/chest/team";
 import { millionCheckinAssets } from "../MillionCheckinModule/const";
 
 const props = defineProps<{
@@ -42,20 +43,22 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: "close"): void;
-  (event: "confirm", newName: string): void;
+  (event: "success"): void;
 }>();
 
 const localName = ref(props.initialName);
+const operating = ref(false);
 
 watch(() => props.initialName, (newVal) => {
   localName.value = newVal;
 });
 
 const emitClose = () => {
+  if (operating.value) return;
   emit("close");
 };
 
-const emitConfirm = () => {
+const emitConfirm = async () => {
   const trimmedName = localName.value.trim();
   if (!trimmedName) {
     showToast("请输入战队名称");
@@ -65,7 +68,21 @@ const emitConfirm = () => {
     showToast("战队名称不能超过20个字符");
     return;
   }
-  emit("confirm", trimmedName);
+  if (operating.value) return;
+  operating.value = true;
+  try {
+    const response = await renameTeam({ teamName: trimmedName });
+    if (response.code !== 200) {
+      throw new Error(response.msg || "修改战队名称失败");
+    }
+    showToast("战队名称修改成功");
+    emit("success");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "修改战队名称失败";
+    showToast(message);
+  } finally {
+    operating.value = false;
+  }
 };
 </script>
 

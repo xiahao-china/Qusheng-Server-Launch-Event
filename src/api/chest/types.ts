@@ -70,8 +70,6 @@ export interface IInitTeamChestPayload {
   secondPrizeQuantity: number;
   thirdPrizeItemId: number;
   thirdPrizeQuantity: number;
-  totalPrizeAmount: number;
-  singleParticipationAmount: number;
 }
 
 export interface IJoinTeamChestPayload {
@@ -118,4 +116,12 @@ export interface IPaginationData<T> {
   page: number;
   size: number;
   list: T[];
+}
+
+export interface IPrizeItem {
+  id: number;
+  itemId: number;
+  name: string;
+  image: string;
+  value: number;
 }

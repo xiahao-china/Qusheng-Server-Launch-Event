@@ -8,20 +8,19 @@
       <div class="team-header-row">
         <div class="team-title-wrap">
           <span class="team-name">您发起的活动:</span>
-          <span class="edit-icon" @click="emit('rename')">✎</span>
         </div>
         <div class="header-links">
-          <span class="link-item" @click="emit('show-rule')">活动规则</span>
+          <span class="link-item" @click="emit('show-rule', 'team-charge')">活动规则</span>
           <span class="link-item" @click="emit('show-records')">我的记录</span>
         </div>
       </div>
 
       <div class="team-info-reward-row">
         <div class="user-info">
-          <img class="user-avatar" :src="props.avatar || defaultAvatar" alt="头像" />
-          <div class="user-name">{{ props.userName || '战队长' }}</div>
-          <div class="contribution-label">贡献</div>
-          <div class="contribution-value">{{ props.contribution || 0 }}</div>
+          <img class="user-avatar" :src="userInfo?.avatar || defaultAvatar" alt="头像" />
+          <div class="user-name">{{ userInfo?.userName || '战队长' }}</div>
+<!--          <div class="contribution-label">贡献</div>-->
+<!--          <div class="contribution-value">{{ props.contribution || 0 }}</div>-->
         </div>
 
         <div class="reward-grid">
@@ -69,16 +68,9 @@
       
       <div class="million-task-step-row">
         <div class="step-item" v-for="step in steps" :key="step">
-          <img class="step-icon" :src="millionCheckinAssets.diamond" alt="chest" />
+          <img class="step-icon" :src="millionCheckinAssets.camera" alt="camera" />
           <span>{{ step }}</span>
         </div>
-      </div>
-
-      <div class="action-footer">
-        <button class="million-task-action" type="button" :disabled="props.isJoining || props.chestStatus !== 1" @click="emit('join', quantity)">
-          <img :src="millionCheckinAssets.actionButton" alt="立即打卡" />
-          <div class="text">立即打卡</div>
-        </button>
       </div>
 
     </div>
@@ -89,34 +81,42 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import type { IMillionDressUpItem, IMillionPrizeDisplayItem } from "../MillionCheckinModule/const";
 import { millionCheckinAssets } from "../MillionCheckinModule/const";
 import defaultAvatar from "@/assets/first-prize.png";
+import { getUserInfo } from "@/api/user";
+import type { IUserInfo } from "@/api/user";
 
 const props = defineProps<{
   teamName: string;
-  userName?: string;
-  avatar?: string;
   contribution?: number | string;
   rewardList: IMillionPrizeDisplayItem[];
   dressUpList: IMillionDressUpItem[];
   progressPercent: number;
-  isJoining: boolean;
   chestStatus: number;
 }>();
 
 const emit = defineEmits<{
-  (event: "rename"): void;
-  (event: "show-rule"): void;
+  (event: "show-rule", type: string): void;
   (event: "show-records"): void;
   (event: "share"): void;
   (event: "purchase", dressUpItemId: number): void;
-  (event: "join", quantity: number): void;
   (event: "click-prize"): void;
 }>();
 
-const quantity = ref(1);
+const userInfo = ref<IUserInfo | null>(null);
+
+onMounted(async () => {
+  try {
+    const res = await getUserInfo();
+    if (res.code === 200) {
+      userInfo.value = res.data.result;
+    }
+  } catch (error) {
+    console.error("Failed to get user info:", error);
+  }
+});
 
 const steps = ["25%", "50%", "75%", "100%"];
 

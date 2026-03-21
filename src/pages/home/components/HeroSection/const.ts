@@ -7,20 +7,22 @@ export const heroAssets = {
   teamCharge: new URL("../../../../assets/team-charge.png", import.meta.url).href,
 };
 
-export type HeroMode = "all-prizes" | "million-checkin" | "rule-description" | "team-charge";
+export enum HeroMode {
+  MILLION_CHECKIN = "million-checkin",
+  RULE_DESCRIPTION = "rule-description",
+  TEAM_CHARGE = "team-charge"
+}
 
 export interface IHeroModeOption {
   mode: HeroMode;
   image: string;
   alt: string;
-  side: "left" | "right";
 }
 
 export const heroModeOptions: IHeroModeOption[] = [
-  { mode: "all-prizes", image: heroAssets.allPrizes, alt: "全服奖品", side: "left" },
-  { mode: "million-checkin", image: heroAssets.millionCheckin, alt: "百万打卡", side: "left" },
-  { mode: "rule-description", image: heroAssets.ruleDescription, alt: "规则说明", side: "right" },
-  { mode: "team-charge", image: heroAssets.teamCharge, alt: "组队冲榜", side: "right" },
+  { mode: HeroMode.MILLION_CHECKIN, image: heroAssets.millionCheckin, alt: "百万打卡" },
+  { mode: HeroMode.TEAM_CHARGE, image: heroAssets.teamCharge, alt: "组队冲榜" },
+  { mode: HeroMode.RULE_DESCRIPTION, image: heroAssets.ruleDescription, alt: "规则说明" },
 ];
 
 export const heroText = {

@@ -5,11 +5,6 @@
         <img :src="invitationImg" alt="邀请好友" class="share-main-img" />
       </div>
 
-      <div class="share-code-wrap">
-        <span class="code-label">邀请好友助力口令</span>
-        <button class="copy-btn" @click="handleCopy">复制</button>
-      </div>
-
       <div class="share-actions-wrap">
         <img class="action-item"  :src="weixinIcon" @click="handleShareWechat" alt="微信" />
         <img class="action-item"  :src="saveIcon" @click="handleSaveImage" alt="保存" />

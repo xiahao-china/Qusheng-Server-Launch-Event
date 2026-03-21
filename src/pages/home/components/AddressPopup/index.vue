@@ -76,7 +76,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: "close"): void;
-  (event: "confirm", addressInfo: { name: string; phone: string; address: string }): void;
+  (event: "success"): void;
 }>();
 
 const prizeImage = props.prizeImage || millionPrizeFallbackList[0].image;
@@ -106,7 +106,10 @@ const emitConfirm = () => {
     showToast("请输入收件地址");
     return;
   }
-  emit("confirm", { name: name.trim(), phone: phone.trim(), address: address.trim() });
+  // mock API request
+  console.log("Address submitted:", { name: name.trim(), phone: phone.trim(), address: address.trim() });
+  showToast("地址提交成功");
+  emit("success");
 };
 </script>
 

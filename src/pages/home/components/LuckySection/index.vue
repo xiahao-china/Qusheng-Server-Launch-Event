@@ -15,7 +15,7 @@
       <article v-for="item in props.luckyList" :key="item.id" class="million-lucky-row">
         <span>{{ item.userName }}</span>
         <span>{{ item.value }}</span>
-        <span>{{ item.prize }}</span>
+        <span class="prize-name">{{ item.prize }}</span>
       </article>
       <p v-if="!props.luckyList.length" class="million-rank-empty">暂无幸运用户数据</p>
     </div>

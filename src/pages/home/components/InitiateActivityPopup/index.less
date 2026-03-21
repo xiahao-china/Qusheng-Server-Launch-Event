@@ -1,3 +1,4 @@
+
 .activity-popup-mask {
   position: fixed;
   inset: 0;
@@ -47,13 +48,14 @@
       z-index: 2;
       border-radius: 14px;
       border: 1px solid rgba(255, 225, 115, 0.5);
-      padding: 6px 14px 18px;
+      padding: 6px 14px 24px;
       text-align: center;
       color: #ffe95f;
       display: flex;
       flex-direction: column;
       align-items: center;
-      height: calc(100% - 26px);
+      height: 485px;
+      box-sizing: border-box;
 
       .activity-popup-title-wrap {
         position: relative;
@@ -74,7 +76,7 @@
           left: 50%;
           transform: translate(-50%, -50%);
           color: #fff;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: bold;
           letter-spacing: 1px;
           white-space: nowrap;
@@ -84,49 +86,58 @@
 
       .initiate-reward-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 12px 8px;
         width: 100%;
-        margin-bottom: auto;
+        overflow-x: hidden;
         overflow-y: auto;
-        padding: 4px;
+        padding: 0 10px;
       }
 
       .million-reward-card {
-        border-radius: 12px;
-        background: transparent;
-        border: 2px solid transparent;
-        padding: 4px;
-        text-align: center;
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: space-between;
         position: relative;
         cursor: pointer;
-        transition: all 0.2s;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        padding-top: 6px;
 
         &.selected {
-          border-color: #ffe95f;
-          background: rgba(255, 233, 95, 0.1);
+          background: rgba(255, 225, 115, 0.15);
+          box-shadow: inset 0 0 0 1px #ffe173;
+          
+          &::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 16px;
+            height: 16px;
+            background-image: url('https://minigame-img.feiguyuyin.com/gusheng_server_launch/checked_icon.png'); // placeholder, replace with actual
+            background-size: cover;
+            z-index: 5;
+          }
         }
 
-        .million-reward-image-shell{
-          width: 70px;
-          height: 70px;
+        .million-reward-image-shell {
+          width: 60px;
+          height: 60px;
           position: relative;
           z-index: 2;
+          margin-bottom: -15px;
+
           .million-reward-image {
-            height: 100%;
             width: 100%;
+            height: 100%;
             object-fit: contain;
           }
         }
 
         .million-reward-platform {
-          width: 76px;
-          margin-top: -15px;
-          pointer-events: none;
+          width: 100%;
           position: relative;
           z-index: 1;
 
@@ -140,27 +151,76 @@
             position: absolute;
             left: 0;
             right: 0;
-            top: 25px;
+            top: 30px;
             margin: 0;
             font-weight: 700;
-            font-size: 8px;
+            font-size: 10px;
             color: #fff;
-            line-height: 1.1;
+            text-align: center;
+            line-height: 1.2;
             background: linear-gradient(270deg, #F7BBFF 0%, #FFFFFF 48%, #FFEF9F 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-fill-color: transparent;
-            transform: scale(0.9);
+            padding: 0 4px;
+            word-break: break-all;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
           }
         }
       }
+
+      .million-purchase-popup-quantity-row {
+        margin: 24px auto 48px;
+        width: 101px;
+        height: 24px;
+        border-radius: 999px;
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .million-purchase-popup-step-btn {
+          border: 0;
+          background: #A592F5;
+          color: white;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%;
+          margin: 0 6px;
+          font-size: 12px;
+          width: 12px;
+          height: 12px;
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+
+        .million-purchase-popup-quantity {
+          font-family: baotuxiaobaiti;
+          font-size: 10px;
+          font-weight: normal;
+          line-height: 6px;
+          text-align: center;
+          letter-spacing: 0em;
+
+          color: #333333;
+        }
+      }
+
+
 
       .rename-action-row {
         display: flex;
         justify-content: center;
         gap: 16px;
-        margin-top: 20px;
+        margin-top: 0;
       }
 
       .rename-action-btn {

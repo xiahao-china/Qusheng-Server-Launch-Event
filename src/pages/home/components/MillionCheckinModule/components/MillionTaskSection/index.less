@@ -169,11 +169,25 @@
     text-align: center;
     font-size: 11px;
     color: #ffe27a;
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+
+      .step-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+      }
+    }
   }
 
   .million-task-action-row {
     margin-top: 10px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
   }
 
@@ -182,7 +196,6 @@
     display: inline-flex;
     align-items: flex-end;
     padding-bottom: 4px;
-    height: 40px;
     border-radius: 8px;
     white-space: nowrap;
     font-size: 11px;

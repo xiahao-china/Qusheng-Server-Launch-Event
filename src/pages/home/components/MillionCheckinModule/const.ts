@@ -8,6 +8,7 @@ export const millionCheckinAssets = {
     cancelButton: new URL("../../../../assets/cancel-button-background.png", import.meta.url).href,
     confirmButton: new URL("../../../../assets/confirm-button-background.png", import.meta.url).href,
     diamond: new URL("../../../../assets/diamond.png", import.meta.url).href,
+    camera: new URL("../../../../assets/camera.png", import.meta.url).href,
     prize1: new URL("../../../../assets/first-prize.png", import.meta.url).href,
     prize2: new URL("../../../../assets/second-prize.png", import.meta.url).href,
     prize3: new URL("../../../../assets/third-prize.png", import.meta.url).href,

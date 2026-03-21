@@ -3,21 +3,9 @@
     <button class="hero-back-btn" type="button" @click="handleClosePage">
       <img :src="heroAssets.backButton" alt="返回" />
     </button>
-    <div class="hero-mode-group hero-mode-group-left">
+    <div class="hero-mode-group">
       <button
-        v-for="item in leftModeOptions"
-        :key="item.mode"
-        class="hero-mode-btn"
-        :class="{ 'is-active': item.mode === props.currentMode }"
-        type="button"
-        @click="handleModeChange(item.mode)"
-      >
-        <img :src="item.image" :alt="item.alt" />
-      </button>
-    </div>
-    <div class="hero-mode-group hero-mode-group-right">
-      <button
-        v-for="item in rightModeOptions"
+        v-for="item in heroModeOptions"
         :key="item.mode"
         class="hero-mode-btn"
         :class="{ 'is-active': item.mode === props.currentMode }"
@@ -33,8 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { heroAssets, heroModeOptions, type HeroMode } from "./const";
+import { heroAssets, heroModeOptions, HeroMode } from "./const";
+import { closeWebView } from "@/util/bridge";
 
 const props = defineProps<{
   currentMode: HeroMode;
@@ -45,11 +33,8 @@ const emit = defineEmits<{
 }>();
 
 const handleClosePage = () => {
-  window.close();
+  closeWebView();
 };
-
-const leftModeOptions = computed(() => heroModeOptions.filter((item) => item.side === "left"));
-const rightModeOptions = computed(() => heroModeOptions.filter((item) => item.side === "right"));
 
 const handleModeChange = (mode: HeroMode) => {
   emit("mode-change", mode);

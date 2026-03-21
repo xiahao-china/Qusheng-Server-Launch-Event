@@ -23,7 +23,9 @@
             <img :src="millionCheckinAssets.diamond" alt="钻石" />
             <span>{{ mountConfig?.price }}</span>
           </p>
-          <p class="million-purchase-popup-balance">我的余额：<img :src="millionCheckinAssets.diamond" alt="钻石" />0 充值</p>
+          <p class="million-purchase-popup-balance" @click="handleRecharge">
+            我的余额：<img :src="millionCheckinAssets.diamond" alt="钻石" />{{ balance }} 充值
+          </p>
           <div class="million-purchase-popup-action-row">
             <button class="million-purchase-popup-btn" type="button" :disabled="submitting" @click="emit('close')">
               <img :src="millionCheckinAssets.cancelButton" alt="取消" />
@@ -52,6 +54,8 @@
 import { computed, ref, onMounted } from "vue";
 import { showToast } from "vant";
 import { getTeamMountConfig, createTeam } from "@/api/chest/team";
+import { getWalletAmount } from "@/api/user";
+import { rechargeMoney } from "@/util/bridge";
 import type { ITeamMountConfig } from "@/api/chest/types";
 import { millionCheckinAssets } from "../MillionCheckinModule/const";
 
@@ -63,10 +67,26 @@ const emit = defineEmits<{
 const mountConfig = ref<ITeamMountConfig | null>(null);
 const submitting = ref(false);
 const success = ref(false);
+const balance = ref(0);
 
 const popupTitle = computed(() => {
   return success.value ? "恭喜你" : "获得开服座驾";
 });
+
+const loadWalletAmount = async () => {
+  try {
+    const res = await getWalletAmount();
+    if (res.code === 200 && res.data) {
+      balance.value = res.data.balance || 0;
+    }
+  } catch (error) {
+    console.error("Failed to load wallet amount", error);
+  }
+};
+
+const handleRecharge = () => {
+  rechargeMoney();
+};
 
 const loadConfig = async () => {
   try {
@@ -108,6 +128,7 @@ const handleSuccessClose = () => {
 
 onMounted(() => {
   loadConfig();
+  loadWalletAmount();
 });
 </script>
 

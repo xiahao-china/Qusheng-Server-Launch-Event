@@ -26,14 +26,13 @@
         <div class="million-task-progress-fill" :style="{ width: `${props.progressPercent}%` }" />
       </div>
       <div class="million-task-step-row">
-        <span v-for="step in steps" :key="step">{{ step }}</span>
+        <div class="step-item" v-for="step in steps" :key="step">
+          <img class="step-icon" :src="millionCheckinAssets.camera" alt="camera" />
+          <span>{{ step }}</span>
+        </div>
       </div>
       <div class="million-task-action-row">
-        <div class="million-task-rule" type="button" @click="emit('show-rule')">活动规则</div>
-        <button class="million-task-action" type="button" :disabled="props.isJoining || props.chestStatus !== 1" @click="emit('join', quantity)">
-          <img :src="millionCheckinAssets.actionButton" alt="立即打卡" />
-          <div class="text">立即打卡</div>
-        </button>
+        <div class="million-task-rule" type="button" @click="emit('show-rule', 'million-checkin')">活动规则</div>
         <div class="million-task-record" type="button" @click="emit('show-records')">我的记录</div>
       </div>
     </div>
@@ -51,7 +50,6 @@ import { millionCheckinAssets } from "../../const";
 const props = defineProps<{
   dressUpList: IMillionDressUpItem[];
   progressPercent: number;
-  isJoining: boolean;
   chestStatus: number;
   currentParticipationCount: number;
   totalOpenTimes: number;
@@ -60,12 +58,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: "purchase", dressUpItemId: number): void;
-  (event: "join", quantity: number): void;
-  (event: "show-rule"): void;
+  (event: "show-rule", type: string): void;
   (event: "show-records"): void;
 }>();
-
-const quantity = ref(1);
 
 const steps = ["25%", "50%", "75%", "100%"];
 
