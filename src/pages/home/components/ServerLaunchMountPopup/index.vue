@@ -24,14 +24,14 @@
             <span>{{ mountConfig?.price }}</span>
           </p>
           <p class="million-purchase-popup-balance" @click="handleRecharge">
-            我的余额：<img :src="millionCheckinAssets.diamond" alt="钻石" />{{ balance }} 充值
+            我的余额：<img :src="millionCheckinAssets.diamond" alt="钻石" /> <span>{{ balance }}</span> 充值
           </p>
           <div class="million-purchase-popup-action-row">
             <button class="million-purchase-popup-btn" type="button" :disabled="submitting" @click="emit('close')">
               <img :src="millionCheckinAssets.cancelButton" alt="取消" />
               <div class="text">取消</div>
             </button>
-            <button class="million-purchase-popup-btn" type="button" :disabled="submitting" @click="handleConfirm">
+            <button class="million-purchase-popup-btn" :class="{ 'is-insufficient': balance < (mountConfig?.price || 0) }" type="button" :disabled="submitting" @click="handleConfirm">
               <img :src="millionCheckinAssets.confirmButton" alt="确定" />
               <div class="text">确定</div>
             </button>
@@ -104,6 +104,10 @@ const loadConfig = async () => {
 
 const handleConfirm = async () => {
   if (submitting.value) return;
+  if (balance.value < (mountConfig.value?.price || 0)) {
+    showToast("余额不足");
+    return;
+  }
   submitting.value = true;
   try {
     const response = await createTeam();

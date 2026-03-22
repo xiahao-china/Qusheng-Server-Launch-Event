@@ -1,3 +1,15 @@
+@keyframes btn-shine {
+  0% {
+    left: -100%;
+  }
+  20% {
+    left: 200%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
 .team-task-section {
   margin: 0 14px 0;
   position: relative;
@@ -268,6 +280,20 @@
     background: transparent;
     position: relative;
     margin: 0 auto;
+    overflow: hidden;
+    border-radius: 4px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+      transform: skewX(-20deg);
+      animation: btn-shine 2.5s infinite;
+    }
 
     .text {
       position: absolute;

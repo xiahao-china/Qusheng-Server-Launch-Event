@@ -82,7 +82,7 @@
       }
 
       .million-purchase-popup-image {
-        margin: 12px auto 0;
+        margin: 4px auto 0;
         width: 105px;
         height: 105px;
         object-fit: contain;
@@ -185,18 +185,24 @@
         font-size: 12px;
         font-weight: 700;
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         justify-content: center;
         gap: 4px;
 
         img {
-          width: 12px;
-          height: 12px;
+          width: 16px;
+          height: 16px;
+        }
+        span{
+          color: #ffe95f;
+          font-size: 18px;
+          font-weight: 800;
+          margin-bottom: -3px;
         }
       }
 
       .million-purchase-popup-action-row {
-        margin-top: 12px;
+        margin-top: 24px;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
@@ -230,6 +236,10 @@
 
         &:disabled {
           opacity: 0.6;
+        }
+
+        &.is-insufficient {
+          filter: grayscale(100%);
         }
       }
 

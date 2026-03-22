@@ -2,17 +2,18 @@
   <div class="million-purchase-popup-mask">
     <section class="million-purchase-popup-panel" :class="{'million-purchase-popup-panel-success-status': isSuccess}">
       <div class="million-purchase-popup-bg-shell">
-        <img class="million-purchase-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景" />
+        <img class="million-purchase-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景"/>
       </div>
-      <div class="million-purchase-popup-content" >
+      <div class="million-purchase-popup-content">
         <div class="million-purchase-popup-title-wrap">
-          <img class="million-purchase-popup-title-bg" :src="millionCheckinAssets.titleBackground" alt="标题背景" />
+          <img class="million-purchase-popup-title-bg" :src="millionCheckinAssets.titleBackground" alt="标题背景"/>
           <h3 class="million-purchase-popup-title">{{ popupTitle }}</h3>
         </div>
 
-        <p v-if="isSuccess" class="million-purchase-popup-success-text">恭喜您！您购买的头像框<br/>已经发放到您的个性装扮中！</p>
+        <p v-if="isSuccess" class="million-purchase-popup-success-text">恭喜您！您购买的头像框<br/>已经发放到您的个性装扮中！
+        </p>
 
-        <img class="million-purchase-popup-image" :src="props.dressUpItem.image" :alt="props.dressUpItem.name" />
+        <img class="million-purchase-popup-image" :src="props.dressUpItem.image" :alt="props.dressUpItem.name"/>
         <div class="million-reward-platform">
           <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
           <p class="million-reward-name">{{ props.dressUpItem.name }}</p>
@@ -21,47 +22,54 @@
         <template v-if="!isSuccess">
 
           <div class="million-purchase-popup-quantity-row">
-            <button class="million-purchase-popup-step-btn" type="button" :disabled="localQuantity <= 1" @click="handleMinus">-</button>
+            <button class="million-purchase-popup-step-btn" type="button" :disabled="localQuantity <= 1"
+                    @click="handleMinus">-
+            </button>
             <span class="million-purchase-popup-quantity">{{ localQuantity }}个</span>
-            <button class="million-purchase-popup-step-btn" type="button" :disabled="localQuantity >= 99" @click="handlePlus">+</button>
+            <button class="million-purchase-popup-step-btn" type="button" :disabled="localQuantity >= 99"
+                    @click="handlePlus">+
+            </button>
           </div>
           <p class="million-purchase-popup-price">
-            <img :src="millionCheckinAssets.diamond" alt="钻石" />
+            <img :src="millionCheckinAssets.diamond" alt="钻石"/>
             <span>{{ totalPrice }}</span>
           </p>
-          <p class="million-purchase-popup-balance" @click="handleRecharge">我的余额：<img :src="millionCheckinAssets.diamond" alt="钻石" />{{ balance }} 充值</p>
+          <p class="million-purchase-popup-balance" @click="handleRecharge">我的余额：<img
+              :src="millionCheckinAssets.diamond" alt="钻石"/> <span>{{ balance }}</span> 充值</p>
           <div class="million-purchase-popup-action-row">
             <button class="million-purchase-popup-btn" type="button" :disabled="submitting" @click="emit('close')">
-              <img :src="millionCheckinAssets.cancelButton" alt="取消" />
+              <img :src="millionCheckinAssets.cancelButton" alt="取消"/>
               <div class="text">取消</div>
             </button>
-            <button class="million-purchase-popup-btn" type="button" :disabled="submitting" @click="handleConfirm">
-              <img :src="millionCheckinAssets.confirmButton" alt="确定" />
+            <button class="million-purchase-popup-btn" :class="{ 'is-insufficient': balance < totalPrice }"
+                    type="button" :disabled="submitting" @click="handleConfirm">
+              <img :src="millionCheckinAssets.confirmButton" alt="确定"/>
               <div class="text">确定</div>
             </button>
           </div>
         </template>
 
-        <button v-if="isSuccess" class="million-purchase-popup-btn million-purchase-popup-ok-btn" type="button" @click="handleSuccessClose">
-          <img :src="millionCheckinAssets.confirmButton" alt="我知道啦" />
+        <button v-if="isSuccess" class="million-purchase-popup-btn million-purchase-popup-ok-btn" type="button"
+                @click="handleSuccessClose">
+          <img :src="millionCheckinAssets.confirmButton" alt="我知道啦"/>
           <div class="text">确定</div>
         </button>
       </div>
       <div class="million-purchase-popup-bg-shell bottom">
-        <img class="million-purchase-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景" />
+        <img class="million-purchase-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景"/>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
-import { showToast } from "vant";
-import { joinGlobalChest } from "@/api/chest/global";
-import { getWalletAmount } from "@/api/user";
-import { rechargeMoney } from "@/util/bridge";
-import { millionCheckinAssets } from "../../const";
-import type { IPurchaseItem } from "../MillionTaskSection/const";
+import {computed, onMounted, ref, watch} from "vue";
+import {showToast} from "vant";
+import {joinGlobalChest} from "@/api/chest/global";
+import {getWalletAmount} from "@/api/user";
+import {rechargeMoney} from "@/util/bridge";
+import {millionCheckinAssets} from "../../const";
+import type {IPurchaseItem} from "../MillionTaskSection/const";
 
 const props = defineProps<{
   dressUpItem: IPurchaseItem;
@@ -94,11 +102,11 @@ onMounted(() => {
 });
 
 watch(
-  () => props.quantity,
-  (value) => {
-    localQuantity.value = Math.max(1, value);
-  },
-  { immediate: true }
+    () => props.quantity,
+    (value) => {
+      localQuantity.value = Math.max(1, value);
+    },
+    {immediate: true}
 );
 
 const popupTitle = computed(() => {
@@ -135,6 +143,10 @@ const resolveApiResult = <T>(response: { code: number; msg: string; data: T }) =
 const handleConfirm = async () => {
   if (localQuantity.value < 1) {
     showToast("参与数量至少为1");
+    return;
+  }
+  if (balance.value < totalPrice.value) {
+    showToast("余额不足");
     return;
   }
   submitting.value = true;
