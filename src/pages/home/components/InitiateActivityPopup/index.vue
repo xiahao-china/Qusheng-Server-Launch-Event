@@ -19,7 +19,7 @@
             @click="selectPrize(item.id)"
           >
             <div class="million-reward-image-shell">
-              <img class="million-reward-image" :src="item.image" :alt="item.name" />
+              <img class="million-reward-image" :src="item.imageUrl" :alt="item.name" />
             </div>
             <div class="million-reward-platform">
               <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
@@ -128,7 +128,7 @@ const emitNext = async () => {
   if (!selectedPrize) return;
 
   selections.value.push({
-    itemId: selectedPrize.itemId,
+    itemId: selectedPrize.id,
     quantity: quantity.value
   });
 

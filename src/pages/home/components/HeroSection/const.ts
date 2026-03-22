@@ -2,9 +2,8 @@ export const heroAssets = {
   topBackground: new URL("../../../../assets/top-background.png", import.meta.url).href,
   backButton: new URL("../../../../assets/back-button.png", import.meta.url).href,
   allPrizes: new URL("../../../../assets/all-prizes.png", import.meta.url).href,
-  millionCheckin: new URL("../../../../assets/million-checkin.png", import.meta.url).href,
-  ruleDescription: new URL("../../../../assets/rule-description.png", import.meta.url).href,
-  teamCharge: new URL("../../../../assets/team-charge.png", import.meta.url).href,
+  mainBtnActive: new URL("../../../../assets/main-btn-active.png", import.meta.url).href,
+  mainBtnNormal: new URL("../../../../assets/main-btn-normal.png", import.meta.url).href,
 };
 
 export enum HeroMode {
@@ -15,14 +14,13 @@ export enum HeroMode {
 
 export interface IHeroModeOption {
   mode: HeroMode;
-  image: string;
-  alt: string;
+  label: string;
 }
 
 export const heroModeOptions: IHeroModeOption[] = [
-  { mode: HeroMode.MILLION_CHECKIN, image: heroAssets.millionCheckin, alt: "百万打卡" },
-  { mode: HeroMode.TEAM_CHARGE, image: heroAssets.teamCharge, alt: "组队冲榜" },
-  { mode: HeroMode.RULE_DESCRIPTION, image: heroAssets.ruleDescription, alt: "规则说明" },
+  { mode: HeroMode.MILLION_CHECKIN, label: "百万打卡" },
+  { mode: HeroMode.TEAM_CHARGE, label: "战队冲锋" },
+  { mode: HeroMode.RULE_DESCRIPTION, label: "规则说明" },
 ];
 
 export const heroText = {

@@ -12,7 +12,8 @@
         type="button"
         @click="handleModeChange(item.mode)"
       >
-        <img :src="item.image" :alt="item.alt" />
+        <img class="hero-mode-btn-bg" :src="item.mode === props.currentMode ? heroAssets.mainBtnActive : heroAssets.mainBtnNormal" :alt="item.label" />
+        <span class="hero-mode-btn-text">{{ item.label }}</span>
       </button>
     </div>
     <img class="hero-top-bg" :src="heroAssets.topBackground" alt="活动头图" />

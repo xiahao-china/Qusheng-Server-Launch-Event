@@ -108,18 +108,5 @@ export const getTeamChestHistory = (): Promise<IApiResponse<ITeamHistoryItem[]>>
 };
 
 export const getTeamChestPrizeList = (): Promise<IApiResponse<IPrizeItem[]>> => {
-  return post<IApiResponse<IPrizeItem[]>>("/act/chest/team/prizeList");
-  // mock for now
-  // return Promise.resolve({
-  //   code: 200,
-  //   msg: "success",
-  //   data: [
-  //     { id: 1, itemId: 1, name: "HUAWEI Mate 60 RS", image: "https://minigame-img.feiguyuyin.com/gusheng_server_launch/first_prize_demo.png", value: 1000 },
-  //     { id: 2, itemId: 2, name: "PS5", image: "https://minigame-img.feiguyuyin.com/gusheng_server_launch/first_prize_demo.png", value: 800 },
-  //     { id: 3, itemId: 3, name: "Nintendo Switch", image: "https://minigame-img.feiguyuyin.com/gusheng_server_launch/first_prize_demo.png", value: 600 },
-  //     { id: 4, itemId: 4, name: "Apple iPad", image: "https://minigame-img.feiguyuyin.com/gusheng_server_launch/first_prize_demo.png", value: 500 },
-  //     { id: 5, itemId: 5, name: "京东卡 500元", image: "https://minigame-img.feiguyuyin.com/gusheng_server_launch/first_prize_demo.png", value: 100 },
-  //     { id: 6, itemId: 6, name: "定制周边", image: "https://minigame-img.feiguyuyin.com/gusheng_server_launch/first_prize_demo.png", value: 50 },
-  //   ],
-  // });
+  return post<IApiResponse<IPrizeItem[]>>("/act/chest/prize/list");
 };

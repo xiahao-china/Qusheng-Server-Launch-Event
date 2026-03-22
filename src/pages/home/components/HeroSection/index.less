@@ -33,19 +33,49 @@
     gap: 16px;
 
     .hero-mode-btn {
-      width: 108px;
+      position: relative;
+      height: 80px;
       border: 0;
       padding: 0;
       background: transparent;
       transition: transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-      &.is-active {
-
+      &.is-active{
+        transform: translateY(-3px);
+        .hero-mode-btn-text{
+          transform: translateY(-2px);
+        }
       }
 
-      img {
-        width: 100%;
+      .hero-mode-btn-bg {
+        position: relative;
         display: block;
+        width: 100%;
+        object-fit: cover;
+        z-index: 1;
+      }
+
+      .hero-mode-btn-text {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: translateY(-4px);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        font-size: 16px;
+        font-weight: bold;
+        background: linear-gradient(180deg, #F6D191 0%, #FFFFFF 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
       }
     }
   }

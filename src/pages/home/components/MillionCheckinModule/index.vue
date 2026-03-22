@@ -3,7 +3,6 @@
     <NoticeSection :notice-text-list="noticeTextList" />
     <MillionRewardSection :reward-list="rewardList" />
     <MillionTaskSection
-      :dress-up-list="millionDressUpList"
       :progress-percent="progressPercent"
       :chest-status="chestInfo?.status ?? 0"
       :current-participation-count="chestInfo?.currentParticipationCount ?? 0"
@@ -17,11 +16,8 @@
     <!-- <BoardSection :rank-list="rankList" /> -->
     <MillionPurchasePopup
       v-if="purchasePopupVisible && selectedDressUpItem"
-      :dress-up-item-id="selectedDressUpItem.itemId"
-      :dress-up-name="selectedDressUpItem.name"
-      :dress-up-image="selectedDressUpItem.image"
+      :dress-up-item="selectedDressUpItem"
       :quantity="pendingJoinQuantity"
-      :single-participation-amount="chestInfo?.singleParticipationAmount ?? 0"
       @close="handleClosePurchasePopup"
       @success="handlePurchaseSuccess"
     />
@@ -39,11 +35,12 @@ import LuckySection from "../LuckySection/index.vue";
 import type { ILuckyDisplayItem } from "../LuckySection/index.vue";
 import MillionRewardSection from "./components/MillionRewardSection/index.vue";
 import MillionTaskSection from "./components/MillionTaskSection/index.vue";
-import { millionDefaultNoticeText, millionDressUpList, millionPrizeFallbackList } from "./const";
+import type { IPurchaseItem } from "./components/MillionTaskSection/const";
+import { millionDefaultNoticeText, millionPrizeFallbackList } from "./const";
 
 const chestInfo = ref<IChestInfo | null>(null);
 const loading = ref(false);
-const selectedDressUpItemId = ref<number>(millionDressUpList[0]?.itemId ?? 0);
+const selectedDressUpItem = ref<IPurchaseItem | null>(null);
 const purchasePopupVisible = ref(false);
 const pendingJoinQuantity = ref(1);
 
@@ -51,10 +48,6 @@ const emit = defineEmits<{
   (event: "mode-change", mode: string): void;
   (event: "show-rule", type: string): void;
 }>();
-
-const selectedDressUpItem = computed(() => {
-  return millionDressUpList.find((item) => item.itemId === selectedDressUpItemId.value) ?? null;
-});
 
 const rewardList = computed(() => {
   if (!chestInfo.value) {
@@ -143,8 +136,8 @@ const loadGlobalChestInfo = async () => {
   }
 };
 
-const handlePurchaseDressUp = (dressUpItemId: number) => {
-  selectedDressUpItemId.value = dressUpItemId;
+const handlePurchaseDressUp = (item: IPurchaseItem) => {
+  selectedDressUpItem.value = item;
   pendingJoinQuantity.value = 1;
   purchasePopupVisible.value = true;
 };

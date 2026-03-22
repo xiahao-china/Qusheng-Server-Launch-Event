@@ -12,10 +12,10 @@
 
         <p v-if="isSuccess" class="million-purchase-popup-success-text">恭喜您！您购买的头像框<br/>已经发放到您的个性装扮中！</p>
 
-        <img class="million-purchase-popup-image" :src="props.dressUpImage" :alt="props.dressUpName" />
+        <img class="million-purchase-popup-image" :src="props.dressUpItem.image" :alt="props.dressUpItem.name" />
         <div class="million-reward-platform">
           <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
-          <p class="million-reward-name">{{ props.dressUpName }}</p>
+          <p class="million-reward-name">{{ props.dressUpItem.name }}</p>
         </div>
 
         <template v-if="!isSuccess">
@@ -61,13 +61,11 @@ import { joinGlobalChest } from "@/api/chest/global";
 import { getWalletAmount } from "@/api/user";
 import { rechargeMoney } from "@/util/bridge";
 import { millionCheckinAssets } from "../../const";
+import type { IPurchaseItem } from "../MillionTaskSection/const";
 
 const props = defineProps<{
-  dressUpItemId: number;
-  dressUpName: string;
-  dressUpImage: string;
+  dressUpItem: IPurchaseItem;
   quantity: number;
-  singleParticipationAmount: number;
 }>();
 
 const emit = defineEmits<{
@@ -108,7 +106,7 @@ const popupTitle = computed(() => {
 });
 
 const totalPrice = computed(() => {
-  return Math.max(1, localQuantity.value) * props.singleParticipationAmount;
+  return Math.max(1, localQuantity.value) * props.dressUpItem.price;
 });
 
 const handleMinus = () => {
@@ -142,7 +140,7 @@ const handleConfirm = async () => {
   submitting.value = true;
   try {
     const response = await joinGlobalChest({
-      dressUpItemId: props.dressUpItemId,
+      dressUpItemId: props.dressUpItem.id,
       quantity: localQuantity.value,
     });
     resolveApiResult(response);

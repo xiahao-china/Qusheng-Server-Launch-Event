@@ -9,13 +9,13 @@
       </p>
       <div class="million-task-grid">
         <article
-          v-for="item in props.dressUpList"
+          v-for="item in millionDressUpList"
           :key="item.id"
           class="million-task-card"
         >
           <img class="million-task-image" :src="item.image" :alt="item.name" />
           <p class="million-task-name">{{ item.name }}</p>
-          <button class="million-task-buy" type="button" @click="emit('purchase', item.itemId)">
+          <button class="million-task-buy" type="button" @click="handlePurchase(item)">
             <img :src="millionCheckinAssets.confirmButton" alt="购买" />
             <div class="text">购买</div>
           </button>
@@ -43,11 +43,11 @@
 </template>
 
 <script setup lang="ts">
-import type { IMillionDressUpItem } from "../../const";
+import type { IMillionDressUpItem, IPurchaseItem } from "./const";
+import { millionDressUpList } from "./const";
 import { millionCheckinAssets } from "../../const";
 
 const props = defineProps<{
-  dressUpList: IMillionDressUpItem[];
   progressPercent: number;
   chestStatus: number;
   currentParticipationCount: number;
@@ -56,10 +56,19 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: "purchase", dressUpItemId: number): void;
+  (event: "purchase", item: IPurchaseItem): void;
   (event: "show-rule", type: string): void;
   (event: "show-records"): void;
 }>();
+
+const handlePurchase = (item: IMillionDressUpItem) => {
+  emit("purchase", {
+    id: item.itemId,
+    price: props.singleParticipationAmount,
+    image: item.image,
+    name: item.name,
+  });
+};
 
 const steps = ["25%", "50%", "75%", "100%"];
 

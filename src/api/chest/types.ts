@@ -120,8 +120,11 @@ export interface IPaginationData<T> {
 
 export interface IPrizeItem {
   id: number;
-  itemId: number;
   name: string;
-  image: string;
+  imageUrl: string;
   value: number;
+  description?: string;
+  enabled?: number;
+  createTime?: string;
+  updateTime?: string;
 }

@@ -15,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { showToast, showLoadingToast } from "vant";
 import { shareImageToWechat, saveImageToLocal } from "@/util/bridge";
 import { generateShareImageBase64 } from "./const";
@@ -59,20 +58,6 @@ const handleSaveImage = async () => {
   });
   try {
     const base64 = await generateShareImageBase64(invitationImg, qrcodeImg);
-    console.log('base64',base64);
-    
-    // 用于测试预览生成的图片
-    const img = document.createElement('img');
-    img.src = base64;
-    img.style.position = 'fixed';
-    img.style.top = '0';
-    img.style.left = '0';
-    img.style.width = '100%';
-    img.style.zIndex = '9999';
-    // 点击图片时移除，方便继续操作
-    img.onclick = () => document.body.removeChild(img);
-    document.body.appendChild(img);
-
     await saveImageToLocal(base64);
     showToast("保存图片成功");
   } catch (error) {

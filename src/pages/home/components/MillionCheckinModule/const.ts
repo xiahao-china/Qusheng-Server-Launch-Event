@@ -38,19 +38,6 @@ export const millionPrizeFallbackList: IMillionPrizeDisplayItem[] = [
     {id: 3, itemId: 3, name: "Apple Watch Ultra 3", label: "三等奖", image: millionCheckinAssets.prize3, quantity: 1},
 ];
 
-export interface IMillionDressUpItem {
-    id: number;
-    itemId: number;
-    name: string;
-    image: string;
-}
-
-export const millionDressUpList: IMillionDressUpItem[] = [
-    {id: 1, itemId: 10086, name: "圣翼之光", image: millionCheckinAssets.frame1},
-    {id: 2, itemId: 10087, name: "盛典之星", image: millionCheckinAssets.frame2},
-    {id: 3, itemId: 10088, name: "璀璨之星", image: millionCheckinAssets.frame3},
-];
-
 export const millionAvatarFallbacks = [
     millionCheckinAssets.avatar1,
     millionCheckinAssets.avatar2,

@@ -82,7 +82,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import type { IMillionDressUpItem, IMillionPrizeDisplayItem } from "../MillionCheckinModule/const";
+import type { IMillionPrizeDisplayItem } from "../MillionCheckinModule/const";
+import type { IMillionDressUpItem } from "../MillionCheckinModule/components/MillionTaskSection/const";
 import { millionCheckinAssets } from "../MillionCheckinModule/const";
 import defaultAvatar from "@/assets/first-prize.png";
 import { getUserInfo } from "@/api/user";

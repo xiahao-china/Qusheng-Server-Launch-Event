@@ -75,7 +75,8 @@ import SharePopup from "../SharePopup/index.vue";
 import AddressPopup from "../AddressPopup/index.vue";
 import LuckySection from "../LuckySection/index.vue";
 import type { ILuckyDisplayItem } from "../LuckySection/index.vue";
-import { millionDressUpList, millionPrizeFallbackList } from "../MillionCheckinModule/const";
+import { millionPrizeFallbackList } from "../MillionCheckinModule/const";
+import { millionDressUpList } from "../MillionCheckinModule/components/MillionTaskSection/const";
 import { TeamModuleStatus, resolveApiResult } from "./const";
 
 const emit = defineEmits<{
