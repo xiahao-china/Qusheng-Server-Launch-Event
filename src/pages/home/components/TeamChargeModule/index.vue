@@ -27,7 +27,7 @@
       @purchase="handlePurchaseDressUp"
       @click-prize="openAddressPopup"
     />
-    <LuckySection :lucky-list="luckyList" />
+    <LuckySection :chest-type="2" :team-id="teamInfo?.teamId ? String(teamInfo.teamId) : undefined" />
     <!-- <BoardSection :rank-list="rankDisplayList" /> -->
     <ServerLaunchMountPopup
       v-if="mountPopupVisible"
@@ -74,7 +74,6 @@ import InitiateActivityPopup from "../InitiateActivityPopup/index.vue";
 import SharePopup from "../SharePopup/index.vue";
 import AddressPopup from "../AddressPopup/index.vue";
 import LuckySection from "../LuckySection/index.vue";
-import type { ILuckyDisplayItem } from "../LuckySection/index.vue";
 import { millionPrizeFallbackList } from "../MillionCheckinModule/const";
 import { millionDressUpList } from "../MillionCheckinModule/components/MillionTaskSection/const";
 import { TeamModuleStatus, resolveApiResult } from "./const";
@@ -165,32 +164,6 @@ const progressPercent = computed(() => {
   }
   const rawValue = (teamChestInfo.value.currentParticipationCount / teamChestInfo.value.totalOpenTimes) * 100;
   return Math.max(0, Math.min(rawValue, 100));
-});
-
-const luckyList = computed<ILuckyDisplayItem[]>(() => {
-  if (!teamChestInfo.value && !currentHistoryItem.value) {
-    return [];
-  }
-  
-  const status = teamChestInfo.value ? teamChestInfo.value.status : currentHistoryItem.value?.status;
-  const singleParticipationAmount = teamChestInfo.value ? teamChestInfo.value.singleParticipationAmount : 0;
-  
-  const winnerUserIds = teamChestInfo.value ? [
-    teamChestInfo.value.result?.firstPrizeUserId ?? "",
-    teamChestInfo.value.result?.secondPrizeUserId ?? "",
-    teamChestInfo.value.result?.thirdPrizeUserId ?? "",
-  ] : [
-    currentHistoryItem.value?.firstPrizeUserId ?? "",
-    currentHistoryItem.value?.secondPrizeUserId ?? "",
-    currentHistoryItem.value?.thirdPrizeUserId ?? "",
-  ];
-
-  return teamPrizeList.value.map((item, index) => ({
-    id: index + 1,
-    userName: status === 2 ? winnerUserIds[index] || "未知用户" : "开奖中",
-    value: singleParticipationAmount,
-    prize: item.name,
-  }));
 });
 
 const loadTeamInfo = async () => {

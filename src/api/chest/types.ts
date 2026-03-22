@@ -111,6 +111,35 @@ export interface IUserRecordItem {
   prizeDesc: string;
 }
 
+export interface IChestWinner {
+  chestActivityId: number;
+  chestType: number;
+  openTime: string;
+  firstPrizeUserId: string;
+  firstPrizeUserName: string | null;
+  firstPrizeUserAvatar: string | null;
+  firstPrizeName: string;
+  firstPrizeQuantity: number;
+  secondPrizeUserId: string;
+  secondPrizeUserName: string | null;
+  secondPrizeUserAvatar: string | null;
+  secondPrizeName: string;
+  secondPrizeQuantity: number;
+  thirdPrizeUserId: string;
+  thirdPrizeUserName: string | null;
+  thirdPrizeUserAvatar: string | null;
+  thirdPrizeName: string;
+  thirdPrizeQuantity: number;
+}
+
+export interface IChestWinnerListPayload {
+  chestActivityId?: number;
+  chestType?: number;
+  teamId?: string;
+  page?: number;
+  size?: number;
+}
+
 export interface IPaginationData<T> {
   total: number;
   page: number;

@@ -12,7 +12,7 @@
       @show-rule="(type) => emit('show-rule', type)"
       @show-records="showRecords"
     />
-    <LuckySection :lucky-list="luckyList" />
+    <LuckySection :chest-type="1" />
     <!-- <BoardSection :rank-list="rankList" /> -->
     <MillionPurchasePopup
       v-if="purchasePopupVisible && selectedDressUpItem"
@@ -32,7 +32,6 @@ import type { IChestInfo } from "@/api/chest/types";
 import NoticeSection from "../NoticeSection/index.vue";
 import MillionPurchasePopup from "./components/MillionPurchasePopup/index.vue";
 import LuckySection from "../LuckySection/index.vue";
-import type { ILuckyDisplayItem } from "../LuckySection/index.vue";
 import MillionRewardSection from "./components/MillionRewardSection/index.vue";
 import MillionTaskSection from "./components/MillionTaskSection/index.vue";
 import type { IPurchaseItem } from "./components/MillionTaskSection/const";
@@ -96,20 +95,6 @@ const noticeTextList = computed(() => {
   return chestInfo.value.participants.map((participant) => {
     return `${participant.userName} 购买${participant.quantity}次并成功打卡`;
   });
-});
-
-const luckyList = computed<ILuckyDisplayItem[]>(() => {
-  const winnerUserIds = [
-    chestInfo.value?.result?.firstPrizeUserId ?? "",
-    chestInfo.value?.result?.secondPrizeUserId ?? "",
-    chestInfo.value?.result?.thirdPrizeUserId ?? "",
-  ];
-  return rewardList.value.map((item, index) => ({
-    id: index + 1,
-    userName: chestInfo.value?.status === 2 ? winnerUserIds[index] || "未知用户" : "开奖中",
-    value: chestInfo.value?.singleParticipationAmount ?? 0,
-    prize: item.label,
-  }));
 });
 
 const resolveApiResult = <T>(response: { code: number; msg: string; data: T }) => {

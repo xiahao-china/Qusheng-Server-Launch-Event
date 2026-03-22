@@ -12,12 +12,15 @@
         <span>贡献值</span>
         <span>幸运奖品</span>
       </div>
-      <article v-for="item in props.luckyList" :key="item.id" class="million-lucky-row">
-        <span>{{ item.userName }}</span>
-        <span>{{ item.value }}</span>
-        <span class="prize-name">{{ item.prize }}</span>
-      </article>
-      <p v-if="!props.luckyList.length" class="million-rank-empty">暂无幸运用户数据</p>
+      <div class="million-lucky-content">
+        <article v-for="item in luckyList" :key="item.id" class="million-lucky-row">
+          <span>{{ item.userName }}</span>
+          <span>{{ item.value }}</span>
+          <span class="prize-name">{{ item.prize }}</span>
+        </article>
+      </div>
+
+      <p v-if="!luckyList.length" class="million-rank-empty">暂无幸运用户数据</p>
     </div>
     <div class="million-rank-bg-shell bottom">
       <img class="million-rank-bg" :src="millionCheckinAssets.panelBackground" alt="排行背景" />
@@ -26,19 +29,75 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, watch } from "vue";
 import { millionCheckinAssets } from "../MillionCheckinModule/const";
+import { getChestWinnerList } from "@/api/chest/global";
 
 export interface ILuckyDisplayItem {
   id: number;
   userName: string;
-  value: number;
+  value: number | string;
   prize: string;
 }
 
 const props = defineProps<{
-  luckyList: ILuckyDisplayItem[];
+  chestType: number;
+  teamId?: string;
 }>();
 
+const luckyList = ref<ILuckyDisplayItem[]>([]);
+
+const fetchLuckyList = async () => {
+  try {
+    const res = await getChestWinnerList({
+      chestType: props.chestType,
+      teamId: props.teamId,
+      page: 1,
+      size: 20
+    });
+    if (res.code === 200 && res.data && res.data.list) {
+      const list: ILuckyDisplayItem[] = [];
+      let idCounter = 1;
+      res.data.list.forEach((winner) => {
+        if (winner.firstPrizeUserId) {
+          list.push({
+            id: idCounter++,
+            userName: winner.firstPrizeUserName || winner.firstPrizeUserId,
+            value: "-",
+            prize: winner.firstPrizeName,
+          });
+        }
+        if (winner.secondPrizeUserId) {
+          list.push({
+            id: idCounter++,
+            userName: winner.secondPrizeUserName || winner.secondPrizeUserId,
+            value: "-",
+            prize: winner.secondPrizeName,
+          });
+        }
+        if (winner.thirdPrizeUserId) {
+          list.push({
+            id: idCounter++,
+            userName: winner.thirdPrizeUserName || winner.thirdPrizeUserId,
+            value: "-",
+            prize: winner.thirdPrizeName,
+          });
+        }
+      });
+      luckyList.value = list;
+    }
+  } catch (error) {
+    console.error("获取幸运用户失败", error);
+  }
+};
+
+onMounted(() => {
+  fetchLuckyList();
+});
+
+watch(() => [props.chestType, props.teamId], () => {
+  fetchLuckyList();
+});
 </script>
 
 <style lang="less" scoped>

@@ -77,7 +77,7 @@ const loadWalletAmount = async () => {
   try {
     const res = await getWalletAmount();
     if (res.code === 200 && res.data) {
-      balance.value = res.data.balance || 0;
+      balance.value = (res.data.balance || 0)/100;
     }
   } catch (error) {
     console.error("Failed to load wallet amount", error);
