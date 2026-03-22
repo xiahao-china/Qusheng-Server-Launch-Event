@@ -40,7 +40,7 @@ onMounted(() => {
   }
 });
 
-const handleModeChange = (mode: HeroMode) => {
+const handleModeChange = (mode: string) => {
   if (mode === HeroMode.RULE_DESCRIPTION) {
     currentRuleType.value = "default";
     visiblePopup.value = mode;
@@ -51,7 +51,7 @@ const handleModeChange = (mode: HeroMode) => {
     visiblePopup.value = "show-records";
     return;
   }
-  currentMode.value = mode;
+  currentMode.value = mode as HeroMode;
 };
 
 const handleShowRule = (type: string) => {

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { getToken } from "./token";
 
-const baseURL = "http://yyjy.baixun.fun/prod-api";
+const baseURL = "/api/v1";
 
 const request = axios.create({
   baseURL,
@@ -12,7 +12,7 @@ request.interceptors.request.use(
   (config) => {
     const token = getToken();
     if (token) {
-      config.headers.apptoken = token;
+      config.headers.userToken = token;
     }
     return config;
   },
@@ -41,8 +41,12 @@ export const http = async <T = any>(
 ): Promise<T> => {
   const { needToken = true, ...config } = options;
 
+    config.headers = {
+        ...(config.headers || {}),
+        cheat: 'jyrs123456'
+    }
   if (!needToken) {
-    delete config.headers?.apptoken;
+    delete config.headers?.userToken;
   }
 
   const response = await request<T>({

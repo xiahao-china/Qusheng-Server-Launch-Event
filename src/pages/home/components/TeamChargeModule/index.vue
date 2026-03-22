@@ -321,7 +321,7 @@ const handleInviteAction = async () => {
   }
 };
 
-const handlePurchaseDressUp = (dressUpItemId: number) => {
+const handlePurchaseDressUp = (_dressUpItemId: number) => {
   // handle purchase dress up for team task
   // similar logic as MillionCheckinModule
 };

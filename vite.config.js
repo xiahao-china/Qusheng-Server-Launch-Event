@@ -20,5 +20,14 @@ export default defineConfig({
       ]
     },
   },
+  server: {
+    proxy: {
+      '/api/v1': {
+        target: 'https://api.huanyin.xin',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/v1/, '')
+      }
+    }
+  }
 })
 

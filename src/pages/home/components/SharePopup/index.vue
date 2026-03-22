@@ -3,6 +3,7 @@
     <div class="share-popup-container">
       <div class="share-image-wrap">
         <img :src="invitationImg" alt="邀请好友" class="share-main-img" />
+        <img :src="qrcodeImg" alt="qrcode" class="qrcode-img" />
       </div>
 
       <div class="share-actions-wrap">
@@ -14,8 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { showToast } from "vant";
+import { ref } from "vue";
+import { showToast, showLoadingToast } from "vant";
+import { shareImageToWechat, saveImageToLocal } from "@/util/bridge";
+import { generateShareImageBase64 } from "./const";
 import invitationImg from "@/assets/invitation.png";
+import qrcodeImg from "@/assets/qrcode.png";
 import weixinIcon from "@/assets/weixin-icon.png";
 import saveIcon from "@/assets/save-icon.png";
 
@@ -31,22 +36,50 @@ const emitClose = () => {
   emit("close");
 };
 
-const handleCopy = async () => {
-  const code = `快来帮我助力战队吧！我的战队口令是：【${props.teamId || "测试口令"}】`;
+const handleShareWechat = async () => {
+  const loading = showLoadingToast({
+    message: "生成中...",
+    forbidClick: true,
+  });
   try {
-    await navigator.clipboard.writeText(code);
-    showToast("复制成功");
-  } catch (err) {
-    showToast("复制失败，请手动复制");
+    const base64 = await generateShareImageBase64(invitationImg, qrcodeImg);
+    await shareImageToWechat(base64);
+    showToast("调起微信分享成功");
+  } catch (error) {
+    showToast("生成分享图失败");
+  } finally {
+    loading.close();
   }
 };
 
-const handleShareWechat = () => {
-  showToast("调起微信分享");
-};
+const handleSaveImage = async () => {
+  const loading = showLoadingToast({
+    message: "生成中...",
+    forbidClick: true,
+  });
+  try {
+    const base64 = await generateShareImageBase64(invitationImg, qrcodeImg);
+    console.log('base64',base64);
+    
+    // 用于测试预览生成的图片
+    const img = document.createElement('img');
+    img.src = base64;
+    img.style.position = 'fixed';
+    img.style.top = '0';
+    img.style.left = '0';
+    img.style.width = '100%';
+    img.style.zIndex = '9999';
+    // 点击图片时移除，方便继续操作
+    img.onclick = () => document.body.removeChild(img);
+    document.body.appendChild(img);
 
-const handleSaveImage = () => {
-  showToast("保存图片成功");
+    await saveImageToLocal(base64);
+    showToast("保存图片成功");
+  } catch (error) {
+    showToast("保存图片失败");
+  } finally {
+    loading.close();
+  }
 };
 </script>
 
