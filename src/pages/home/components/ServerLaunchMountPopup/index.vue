@@ -12,7 +12,7 @@
 
         <p v-if="success" class="million-purchase-popup-success-text">恭喜您！您购买的座驾<br/>已经发放到您的个性装扮中！</p>
 
-        <img class="million-purchase-popup-image" :src="mountConfig?.mountUrl" :alt="mountConfig?.mountName" />
+        <img class="million-purchase-popup-image" :src="mountUrl" :alt="mountConfig?.mountName" />
         <div class="million-reward-platform">
           <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
           <p class="million-reward-name">{{ mountConfig?.mountName }}</p>
@@ -71,6 +71,14 @@ const balance = ref(0);
 
 const popupTitle = computed(() => {
   return success.value ? "恭喜你" : "获得开服座驾";
+});
+
+const mountUrl = computed(() => {
+  const url = mountConfig.value?.mountUrl;
+  if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+    return `https://${url}`;
+  }
+  return url;
 });
 
 const loadWalletAmount = async () => {

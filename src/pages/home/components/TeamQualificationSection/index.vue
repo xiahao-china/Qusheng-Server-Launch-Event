@@ -52,7 +52,13 @@ const emit = defineEmits<{
   action: [];
 }>();
 
-const mountUrl = computed(() => props.mountConfig?.mountUrl || fallbackImage);
+const mountUrl = computed(() => {
+  const url = props.mountConfig?.mountUrl || fallbackImage;
+  if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+    return `https://${url}`;
+  }
+  return url;
+});
 const mountName = computed(() => props.mountConfig?.mountName || "专属坐骑");
 
 const handleAction = () => {

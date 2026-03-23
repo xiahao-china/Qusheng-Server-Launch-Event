@@ -10,8 +10,8 @@
       </div>
       
       <div class="user-info">
-        <img class="user-avatar" :src="props.avatar || defaultAvatar" alt="头像" />
-        <div class="user-name">{{ props.userName || '战队长' }}</div>
+        <img class="user-avatar" :src="userInfo.avatar" alt="头像" />
+        <div class="user-name">{{ userInfo.userName }}</div>
       </div>
       
       <button class="action-btn" type="button" @click="handleInitiate">
@@ -27,22 +27,41 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import bgImg from "@/assets/prize-module-background.png";
-import defaultAvatar from "@/assets/first-prize.png"; // Fallback avatar
+import defaultAvatar from "@/assets/first-prize.png";
 import { millionCheckinAssets } from "@/pages/home/components/MillionCheckinModule/const.ts";
+import { getUserInfo } from "@/api/user";
 
 const backgroundImage = bgImg;
 
 const props = defineProps<{
   teamName: string;
-  userName?: string;
-  avatar?: string;
 }>();
 
 const emit = defineEmits<{
   rename: [];
   initiate: [];
 }>();
+
+const userInfo = ref<{ avatar: string; userName: string }>({
+  avatar: defaultAvatar,
+  userName: "战队长",
+});
+
+onMounted(async () => {
+  try {
+    const res = await getUserInfo();
+    if (res.code === 200 && res.data?.result) {
+      userInfo.value = {
+        avatar: res.data.result.avatar || defaultAvatar,
+        userName: res.data.result.userName || "战队长",
+      };
+    }
+  } catch (error) {
+    console.error("获取用户信息失败", error);
+  }
+});
 
 const handleRename = () => {
   emit("rename");

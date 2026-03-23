@@ -7,9 +7,8 @@
       @action="handleInviteAction"
     />
     <TeamInitiateSection
-      v-else-if="moduleStatus === TeamModuleStatus.Opened || teamChestInfo?.status !== 1"
+      v-else-if="moduleStatus === TeamModuleStatus.Opened"
       :team-name="teamInfo?.teamName || '我的战队'"
-      :user-name="teamInfo?.teamName?.replace('战队', '') || '战队长'"
       @rename="renameCurrentTeam"
       @initiate="initTeamChestWithDefault"
     />
@@ -112,6 +111,7 @@ const moduleStatus = computed<TeamModuleStatus>(() => {
   if (!teamInfo.value?.hasTeam) {
     return TeamModuleStatus.NoQualification;
   }
+  console.log('teamChestInfo.value?.status', teamChestInfo.value?.status);
   if (teamChestInfo.value?.status) {
     return TeamModuleStatus.Initiated;
   }
@@ -121,7 +121,7 @@ const moduleStatus = computed<TeamModuleStatus>(() => {
 const loading = ref(false);
 
 const noticeTextList = computed(() => {
-  if (!teamChestInfo.value?.participants.length) {
+  if (!teamChestInfo.value?.participants?.length) {
     return ["暂无最新战队打卡动态"];
   }
   return teamChestInfo.value.participants.map((participant) => {
@@ -131,6 +131,7 @@ const noticeTextList = computed(() => {
 
 const teamPrizeList = computed(() => {
   if (teamChestInfo.value) {
+    console.log('composeTeamPrizeList(teamChestInfo.value, teamChestPrizeList.value)',composeTeamPrizeList(teamChestInfo.value, teamChestPrizeList.value));
     return composeTeamPrizeList(teamChestInfo.value, teamChestPrizeList.value);
   }
   return [];
@@ -277,10 +278,6 @@ const handlePurchaseDressUp = (dressUpItemId: number) => {
     return;
   }
   const unitPrice = teamChestInfo.value?.singleParticipationAmount ?? 0;
-  if (unitPrice <= 0) {
-    showToast("当前活动暂不可购买");
-    return;
-  }
   selectedDressUpItem.value = {
     id: targetItem.itemId,
     price: unitPrice,

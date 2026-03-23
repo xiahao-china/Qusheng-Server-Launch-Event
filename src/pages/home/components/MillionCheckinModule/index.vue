@@ -89,7 +89,7 @@ const progressPercent = computed(() => {
 });
 
 const noticeTextList = computed(() => {
-  if (!chestInfo.value?.participants.length) {
+  if (!chestInfo.value?.participants?.length) {
     return [millionDefaultNoticeText];
   }
   return chestInfo.value.participants.map((participant) => {
