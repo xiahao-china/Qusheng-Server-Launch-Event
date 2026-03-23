@@ -19,6 +19,15 @@
         </div>
 
         <template v-if="!success">
+
+          <div class="million-purchase-popup-quantity-row">
+            <button class="million-purchase-popup-step-btn" type="button" :disabled="true">-
+            </button>
+            <span class="million-purchase-popup-quantity">永久</span>
+            <button class="million-purchase-popup-step-btn" type="button" :disabled="true">+
+            </button>
+          </div>
+
           <p class="million-purchase-popup-price">
             <img :src="millionCheckinAssets.diamond" alt="钻石" />
             <span>{{ mountConfig?.price }}</span>

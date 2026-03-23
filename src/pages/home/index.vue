@@ -32,6 +32,7 @@ const currentRuleType = ref<HeroMode | "default">("default");
 
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search);
+  console.log('urlParams',urlParams.get("token"));
   const teamId = urlParams.get("teamId");
   if (teamId) {
     currentMode.value = HeroMode.TEAM_CHARGE;

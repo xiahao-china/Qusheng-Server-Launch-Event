@@ -1,5 +1,4 @@
 import type {IChestInfo, IPrizeItem} from "@/api/chest/types";
-import {millionPrizeFallbackList} from "../MillionCheckinModule/const";
 import type {IMillionPrizeDisplayItem} from "../MillionCheckinModule/const";
 
 export enum TeamModuleStatus {

@@ -131,7 +131,6 @@ const noticeTextList = computed(() => {
 
 const teamPrizeList = computed(() => {
   if (teamChestInfo.value) {
-    console.log('composeTeamPrizeList(teamChestInfo.value, teamChestPrizeList.value)',composeTeamPrizeList(teamChestInfo.value, teamChestPrizeList.value));
     return composeTeamPrizeList(teamChestInfo.value, teamChestPrizeList.value);
   }
   return [];

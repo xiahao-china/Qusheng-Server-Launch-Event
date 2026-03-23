@@ -4,7 +4,7 @@
       <div class="activity-popup-bg-shell">
         <img class="activity-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景" />
       </div>
-      <div class="activity-popup-content" >
+      <div class="activity-popup-content" v-if="!hasEnd">
         <div class="activity-popup-title-wrap">
           <img class="activity-popup-title-bg" :src="millionCheckinAssets.titleBackground" alt="标题背景" />
           <h3 class="activity-popup-title">{{ title }}</h3>
@@ -44,8 +44,32 @@
             <div class="text">{{ step === 3 ? '确定' : '下一步' }}</div>
           </button>
         </div>
-
       </div>
+
+      <div class="activity-popup-content" v-else>
+        <div class="activity-popup-title-wrap len">
+          <img class="activity-popup-title-bg" :src="millionCheckinAssets.titleBackground" alt="标题背景" />
+          <h3 class="activity-popup-title">组团成功参与活动获得限定礼物</h3>
+        </div>
+
+        <img class="million-purchase-popup-image" :src="mountUrl" :alt="mountConfig?.mountName" />
+        <div class="million-reward-platform-lar ">
+          <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
+          <p class="million-reward-name">{{ mountConfig?.mountName }}</p>
+        </div>
+
+        <div class="rename-action-row">
+          <button class="rename-action-btn" type="button" @click="emitClose">
+            <img :src="millionCheckinAssets.cancelButton" alt="取消" />
+            <div class="text">取消</div>
+          </button>
+          <button class="rename-action-btn" type="button" @click="emitSubmit">
+            <img :src="millionCheckinAssets.confirmButton" alt="确定" />
+            <div class="text">确定</div>
+          </button>
+        </div>
+      </div>
+
       <div class="activity-popup-bg-shell bottom">
         <img class="activity-popup-bg" :src="millionCheckinAssets.modalBackground" alt="弹窗背景" />
       </div>
@@ -57,8 +81,9 @@
 import { ref, computed, onMounted } from "vue";
 import { showToast } from "vant";
 import { initTeamChest, getTeamChestPrizeList } from "@/api/chest/teamChest";
-import type { IPrizeItem } from "@/api/chest/types";
+import type {IPrizeItem, ITeamMountConfig} from "@/api/chest/types";
 import { millionCheckinAssets } from "../MillionCheckinModule/const";
+import {getTeamMountConfig} from "@/api/chest/team.ts";
 
 const emit = defineEmits<{
   (event: "close"): void;
@@ -70,8 +95,34 @@ const step = ref(1);
 const selectedPrizeId = ref<number | null>(null);
 const quantity = ref(1);
 const operating = ref(false);
+const mountConfig = ref<ITeamMountConfig | null>(null);
+
+
+const hasEnd = ref(false);
 
 const selections = ref<{ itemId: number; quantity: number }[]>([]);
+
+const loadConfig = async () => {
+  try {
+    const response = await getTeamMountConfig();
+    if (response.code === 200) {
+      mountConfig.value = response.data;
+    } else {
+      showToast(response.msg || "获取坐骑配置失败");
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "获取坐骑配置失败";
+    showToast(message);
+  }
+};
+
+const mountUrl = computed(() => {
+  const url = mountConfig.value?.mountUrl;
+  if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+    return `https://${url}`;
+  }
+  return url;
+});
 
 const title = computed(() => {
   const stepMap: Record<number, string> = {
@@ -118,6 +169,10 @@ const emitClose = () => {
   emit("close");
 };
 
+const emitSubmit = () => {
+  emit("success");
+};
+
 const emitNext = async () => {
   if (selectedPrizeId.value === null) {
     showToast("请选择奖品");
@@ -154,7 +209,7 @@ const emitNext = async () => {
       throw new Error(response.msg || "发起战队宝箱失败");
     }
     showToast("战队宝箱发起成功");
-    emit("success");
+    hasEnd.value = true;
   } catch (error) {
     const message = error instanceof Error ? error.message : "发起战队宝箱失败";
     showToast(message);
@@ -162,6 +217,10 @@ const emitNext = async () => {
     operating.value = false;
   }
 };
+
+onMounted(() => {
+  loadConfig();
+});
 </script>
 
 <style lang="less" scoped>
