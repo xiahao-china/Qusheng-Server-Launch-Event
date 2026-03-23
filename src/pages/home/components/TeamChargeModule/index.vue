@@ -2,12 +2,12 @@
   <section class="team-charge-module">
     <NoticeSection :notice-text-list="noticeTextList" />
     <TeamQualificationSection
-      v-if="moduleStatus === TeamModuleStatus.NoQualification"
+      v-if="moduleStatus === TeamModuleStatus.NoQualification && !orderTeamId"
       :mount-config="teamMountConfig"
       @action="handleInviteAction"
     />
     <TeamInitiateSection
-      v-else-if="moduleStatus === TeamModuleStatus.Opened"
+      v-else-if="moduleStatus === TeamModuleStatus.Opened && !orderTeamId"
       :team-name="teamInfo?.teamName || '我的战队'"
       @rename="renameCurrentTeam"
       @initiate="initTeamChestWithDefault"
@@ -69,7 +69,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { showToast } from "vant";
-import { getTeamMountConfig, getTeamQualificationInfo } from "@/api/chest/team";
+import {getTeamMountConfig, getTeamQualificationInfo, getTeamQualificationInfoDetail} from "@/api/chest/team";
 import { getTeamChestDetail, getTeamChestHistory, getTeamChestPrizeList } from "@/api/chest/teamChest";
 import type { IChestInfo, IPrizeItem, ITeamHistoryItem, ITeamMountConfig, ITeamQualificationInfo } from "@/api/chest/types";
 import NoticeSection from "../NoticeSection/index.vue";
@@ -106,6 +106,8 @@ const addressPopupVisible = ref(false);
 const selectedDressUpItem = ref<IPurchaseItem | null>(null);
 const purchasePopupVisible = ref(false);
 const pendingJoinQuantity = ref(1);
+
+const orderTeamId = ref<string | undefined>(undefined);
 
 const moduleStatus = computed<TeamModuleStatus>(() => {
   if (!teamInfo.value?.hasTeam) {
@@ -144,7 +146,12 @@ const progressPercent = computed(() => {
   return Math.max(0, Math.min(rawValue, 100));
 });
 
-const loadTeamInfo = async () => {
+const loadTeamInfo = async (teamId?: number | string) => {
+  if (teamId){
+    const response = await getTeamQualificationInfoDetail(teamId.toString());
+    teamInfo.value = resolveApiResult(response);
+    return;
+  }
   const response = await getTeamQualificationInfo();
   teamInfo.value = resolveApiResult(response);
 };
@@ -154,8 +161,8 @@ const loadMountConfig = async () => {
   teamMountConfig.value = resolveApiResult(response);
 };
 
-const loadTeamChestDetail = async () => {
-  const teamId = teamInfo.value?.teamId;
+const loadTeamChestDetail = async (orderTeamId?: string) => {
+  const teamId = orderTeamId ? orderTeamId : teamInfo.value?.teamId;
   if (moduleStatus.value === TeamModuleStatus.NoQualification || !teamId) {
     teamChestInfo.value = null;
     return;
@@ -181,7 +188,10 @@ const init = async () => {
   }
   loading.value = true;
   try {
-    await loadTeamInfo();
+    const urlParams = new URLSearchParams(window.location.search);
+    const teamId = urlParams.get("teamId");
+    orderTeamId.value = teamId || undefined;
+    await loadTeamInfo(teamId || undefined);
     if (moduleStatus.value === TeamModuleStatus.NoQualification) {
       await loadMountConfig();
       historyList.value = [];
@@ -189,7 +199,7 @@ const init = async () => {
       teamChestPrizeList.value = [];
       return;
     }
-    await Promise.all([loadTeamChestDetail(), loadTeamHistory(), loadTeamChestPrizeList()]);
+    await Promise.all([loadTeamChestDetail(teamId || undefined), loadTeamHistory(), loadTeamChestPrizeList()]);
   } catch (error) {
     const message = error instanceof Error ? error.message : "加载战队信息失败";
     showToast(message);

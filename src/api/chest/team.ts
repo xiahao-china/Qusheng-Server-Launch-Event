@@ -15,6 +15,22 @@ export const getTeamQualificationInfo = (): Promise<IApiResponse<ITeamQualificat
   // });
 };
 
+export const getTeamQualificationInfoDetail = (teamId: string): Promise<IApiResponse<ITeamQualificationInfo>> => {
+    return post<IApiResponse<ITeamQualificationInfo>>(`/act/chest/team/detail?teamId=${teamId}`);
+    // return Promise.resolve({
+    //   code: 200,
+    //   msg: "success",
+    //   data: {
+    //     hasTeam: true,
+    //     teamId: 1001,
+    //     teamName: "Awesome Team",
+    //     ownerUserId: 2001
+    //   }
+    // });
+};
+
+
+
 export const getTeamMountConfig = (): Promise<IApiResponse<ITeamMountConfig>> => {
   return post<IApiResponse<ITeamMountConfig>>("/act/chest/team/mountConfig");
   // return Promise.resolve({
