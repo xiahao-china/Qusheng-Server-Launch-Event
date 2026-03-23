@@ -1,7 +1,7 @@
 <template>
   <section class="team-task-section">
     <div class="team-task-bg-shell">
-      <img class="team-task-bg" :src="millionCheckinAssets.prizeModuleBackground" alt="背景" />
+      <img class="team-task-bg" :src="millionCheckinAssets.prizeModuleBackgroundLen" alt="背景" />
     </div>
     <div class="team-task-content">
       
@@ -24,7 +24,7 @@
         </div>
 
         <div class="reward-grid">
-          <article v-for="item in props.rewardList" :key="item.id" class="million-reward-card" @click="emit('click-prize')">
+          <div v-for="item in props.rewardList" :key="item.id" class="million-reward-card" @click="emit('click-prize')">
             <div class="million-reward-image-shell">
               <img class="million-reward-image" :src="item.image" :alt="item.name" />
             </div>
@@ -33,7 +33,7 @@
               <p class="million-reward-name">{{ item.name }}</p>
             </div>
             <p class="million-reward-label">{{ item.label }}</p>
-          </article>
+          </div>
         </div>
       </div>
 
@@ -47,7 +47,7 @@
       </p>
 
       <div class="million-task-grid">
-        <article
+        <div
           v-for="item in props.dressUpList"
           :key="item.id"
           class="million-task-card"
@@ -58,7 +58,7 @@
             <img :src="millionCheckinAssets.confirmButton" alt="购买" />
             <div class="text">购买</div>
           </button>
-        </article>
+        </div>
       </div>
 
       <div class="million-task-progress">
@@ -75,7 +75,7 @@
 
     </div>
     <div class="team-task-bg-shell bottom">
-      <img class="team-task-bg" :src="millionCheckinAssets.prizeModuleBackground" alt="背景" />
+      <img class="team-task-bg" :src="millionCheckinAssets.prizeModuleBackgroundLen" alt="背景" />
     </div>
   </section>
 </template>

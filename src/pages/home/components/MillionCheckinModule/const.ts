@@ -1,6 +1,7 @@
 export const millionCheckinAssets = {
     panelBackground: new URL("../../../../assets/ranking-background.png", import.meta.url).href,
     prizeModuleBackground: new URL("../../../../assets/prize-module-background.png", import.meta.url).href,
+    prizeModuleBackgroundLen: new URL("../../../../assets/prize-module-background2.png", import.meta.url).href,
     modalBackground: new URL("../../../../assets/modal-background.png", import.meta.url).href,
     titleBackground: new URL("../../../../assets/modal-title-background.png", import.meta.url).href,
     progressBarBackground: new URL("../../../../assets/scrollbar-background.png", import.meta.url).href,

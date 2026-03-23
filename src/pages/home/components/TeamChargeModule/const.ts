@@ -1,3 +1,7 @@
+import type { IChestInfo, IPrizeItem } from "@/api/chest/types";
+import { millionPrizeFallbackList } from "../MillionCheckinModule/const";
+import type { IMillionPrizeDisplayItem } from "../MillionCheckinModule/const";
+
 export enum TeamModuleStatus {
   NoQualification = "no-qualification",
   Opened = "opened",
@@ -9,4 +13,29 @@ export const resolveApiResult = <T>(response: { code: number; msg: string; data:
     throw new Error(response.msg || "请求失败");
   }
   return response.data;
+};
+
+const buildPrizeItem = (
+  level: number,
+  prizeItemId: number,
+  quantity: number,
+  prizeList: IPrizeItem[]
+): IMillionPrizeDisplayItem => {
+  const fallback = millionPrizeFallbackList[level - 1];
+  const prizeItem = prizeList.find((item) => item.id === prizeItemId);
+  const prizeName = prizeItem?.name || `奖品ID ${prizeItemId}`;
+  return {
+    ...fallback,
+    itemId: prizeItemId,
+    name: `${prizeName} x${quantity}`,
+    quantity,
+  };
+};
+
+export const composeTeamPrizeList = (chestInfo: IChestInfo, prizeList: IPrizeItem[]): IMillionPrizeDisplayItem[] => {
+  return [
+    buildPrizeItem(1, chestInfo.firstPrizeItemId, chestInfo.firstPrizeQuantity, prizeList),
+    buildPrizeItem(2, chestInfo.secondPrizeItemId, chestInfo.secondPrizeQuantity, prizeList),
+    buildPrizeItem(3, chestInfo.thirdPrizeItemId, chestInfo.thirdPrizeQuantity, prizeList),
+  ];
 };

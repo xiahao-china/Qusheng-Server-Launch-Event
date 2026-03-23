@@ -38,7 +38,7 @@ export const initTeamChest = (payload: IInitTeamChestPayload): Promise<IApiRespo
 };
 
 export const getTeamChestDetail = (teamId: string): Promise<IApiResponse<IChestInfo | null>> => {
-  return post<IApiResponse<IChestInfo | null>>(`/act/chest/team/detail?teamId=${encodeURIComponent(teamId)}`);
+  return post<IApiResponse<IChestInfo | null>>(`/act/chest/team/chestInfo?teamId=${encodeURIComponent(teamId)}`);
   // return Promise.resolve({
   //   code: 200,
   //   msg: "success",

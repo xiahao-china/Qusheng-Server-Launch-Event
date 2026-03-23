@@ -66,6 +66,7 @@
 import {computed, onMounted, ref, watch} from "vue";
 import {showToast} from "vant";
 import {joinGlobalChest} from "@/api/chest/global";
+import { joinTeamChest } from "@/api/chest/teamChest";
 import {getWalletAmount} from "@/api/user";
 import {rechargeMoney} from "@/util/bridge";
 import {millionCheckinAssets} from "../../const";
@@ -74,6 +75,7 @@ import type {IPurchaseItem} from "../MillionTaskSection/const";
 const props = defineProps<{
   dressUpItem: IPurchaseItem;
   quantity: number;
+  teamId?: string;
 }>();
 
 const emit = defineEmits<{
@@ -151,10 +153,16 @@ const handleConfirm = async () => {
   }
   submitting.value = true;
   try {
-    const response = await joinGlobalChest({
-      dressUpItemId: props.dressUpItem.id,
-      quantity: localQuantity.value,
-    });
+    const response = props.teamId
+      ? await joinTeamChest({
+          teamId: props.teamId,
+          dressUpItemId: props.dressUpItem.id,
+          quantity: localQuantity.value,
+        })
+      : await joinGlobalChest({
+          dressUpItemId: props.dressUpItem.id,
+          quantity: localQuantity.value,
+        });
     resolveApiResult(response);
     isSuccess.value = true;
     showToast("购买成功");

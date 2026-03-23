@@ -42,7 +42,7 @@
     />
     <InitiateActivityPopup
       v-if="initiatePopupVisible"
-      @close="closeInitiatePopup"
+      @close="initiatePopupVisible = false"
       @success="handleInitiateSuccess"
     />
     <SharePopup
@@ -55,6 +55,15 @@
       @close="closeAddressPopup"
       @success="handleAddressSuccess"
     />
+    <MillionPurchasePopup
+      v-if="purchasePopupVisible && selectedDressUpItem"
+      :dress-up-item="selectedDressUpItem"
+      :quantity="pendingJoinQuantity"
+      purchase-mode="team"
+      :team-id="teamInfo?.teamId ? String(teamInfo.teamId) : ''"
+      @close="handleClosePurchasePopup"
+      @success="handlePurchaseSuccess"
+    />
   </section>
 </template>
 
@@ -62,9 +71,10 @@
 import { computed, onMounted, ref } from "vue";
 import { showToast } from "vant";
 import { getTeamMountConfig, getTeamQualificationInfo } from "@/api/chest/team";
-import { getTeamChestDetail, getTeamChestHistory } from "@/api/chest/teamChest";
-import type { IChestInfo, ITeamHistoryItem, ITeamMountConfig, ITeamQualificationInfo } from "@/api/chest/types";
+import { getTeamChestDetail, getTeamChestHistory, getTeamChestPrizeList } from "@/api/chest/teamChest";
+import type { IChestInfo, IPrizeItem, ITeamHistoryItem, ITeamMountConfig, ITeamQualificationInfo } from "@/api/chest/types";
 import NoticeSection from "../NoticeSection/index.vue";
+import MillionPurchasePopup from "../MillionCheckinModule/components/MillionPurchasePopup/index.vue";
 import TeamQualificationSection from "../TeamQualificationSection/index.vue";
 import TeamInitiateSection from "../TeamInitiateSection/index.vue";
 import TeamTaskSection from "../TeamTaskSection/index.vue";
@@ -74,9 +84,9 @@ import InitiateActivityPopup from "../InitiateActivityPopup/index.vue";
 import SharePopup from "../SharePopup/index.vue";
 import AddressPopup from "../AddressPopup/index.vue";
 import LuckySection from "../LuckySection/index.vue";
-import { millionPrizeFallbackList } from "../MillionCheckinModule/const";
 import { millionDressUpList } from "../MillionCheckinModule/components/MillionTaskSection/const";
-import { TeamModuleStatus, resolveApiResult } from "./const";
+import type { IPurchaseItem } from "../MillionCheckinModule/components/MillionTaskSection/const";
+import { composeTeamPrizeList, TeamModuleStatus, resolveApiResult } from "./const";
 
 const emit = defineEmits<{
   (event: "show-rule", type: string): void;
@@ -86,6 +96,7 @@ const emit = defineEmits<{
 const teamInfo = ref<ITeamQualificationInfo | null>(null);
 const teamMountConfig = ref<ITeamMountConfig | null>(null);
 const teamChestInfo = ref<IChestInfo | null>(null);
+const teamChestPrizeList = ref<IPrizeItem[]>([]);
 const historyList = ref<ITeamHistoryItem[]>([]);
 const selectedHistoryIndex = ref(0);
 const mountPopupVisible = ref(false);
@@ -93,15 +104,18 @@ const renamePopupVisible = ref(false);
 const initiatePopupVisible = ref(false);
 const sharePopupVisible = ref(false);
 const addressPopupVisible = ref(false);
+const selectedDressUpItem = ref<IPurchaseItem | null>(null);
+const purchasePopupVisible = ref(false);
+const pendingJoinQuantity = ref(1);
 
 const moduleStatus = computed<TeamModuleStatus>(() => {
   if (!teamInfo.value?.hasTeam) {
     return TeamModuleStatus.NoQualification;
   }
-  if (teamChestInfo.value?.status === 1) {
-    return TeamModuleStatus.Opened;
+  if (teamChestInfo.value?.status) {
+    return TeamModuleStatus.Initiated;
   }
-  return TeamModuleStatus.Initiated;
+  return TeamModuleStatus.Opened;
 });
 
 const loading = ref(false);
@@ -115,47 +129,11 @@ const noticeTextList = computed(() => {
   });
 });
 
-const currentHistoryItem = computed(() => {
-  if (!historyList.value.length) {
-    return null;
-  }
-  return historyList.value[selectedHistoryIndex.value] ?? null;
-});
-
 const teamPrizeList = computed(() => {
   if (teamChestInfo.value) {
-    return [
-      {
-        ...millionPrizeFallbackList[0],
-        name: `奖品ID ${teamChestInfo.value.firstPrizeItemId} x${teamChestInfo.value.firstPrizeQuantity}`,
-      },
-      {
-        ...millionPrizeFallbackList[1],
-        name: `奖品ID ${teamChestInfo.value.secondPrizeItemId} x${teamChestInfo.value.secondPrizeQuantity}`,
-      },
-      {
-        ...millionPrizeFallbackList[2],
-        name: `奖品ID ${teamChestInfo.value.thirdPrizeItemId} x${teamChestInfo.value.thirdPrizeQuantity}`,
-      },
-    ];
+    return composeTeamPrizeList(teamChestInfo.value, teamChestPrizeList.value);
   }
-  if (currentHistoryItem.value) {
-    return [
-      {
-        ...millionPrizeFallbackList[0],
-        name: `${currentHistoryItem.value.firstPrizeName} x${currentHistoryItem.value.firstPrizeQuantity}`,
-      },
-      {
-        ...millionPrizeFallbackList[1],
-        name: `${currentHistoryItem.value.secondPrizeName} x${currentHistoryItem.value.secondPrizeQuantity}`,
-      },
-      {
-        ...millionPrizeFallbackList[2],
-        name: `${currentHistoryItem.value.thirdPrizeName} x${currentHistoryItem.value.thirdPrizeQuantity}`,
-      },
-    ];
-  }
-  return millionPrizeFallbackList;
+  return [];
 });
 
 const progressPercent = computed(() => {
@@ -208,9 +186,10 @@ const init = async () => {
       await loadMountConfig();
       historyList.value = [];
       teamChestInfo.value = null;
+      teamChestPrizeList.value = [];
       return;
     }
-    await Promise.all([loadTeamChestDetail(), loadTeamHistory()]);
+    await Promise.all([loadTeamChestDetail(), loadTeamHistory(), loadTeamChestPrizeList()]);
   } catch (error) {
     const message = error instanceof Error ? error.message : "加载战队信息失败";
     showToast(message);
@@ -255,10 +234,6 @@ const initTeamChestWithDefault = async () => {
   initiatePopupVisible.value = true;
 };
 
-const closeInitiatePopup = () => {
-  initiatePopupVisible.value = false;
-};
-
 const handleShare = () => {
   sharePopupVisible.value = true;
 };
@@ -295,9 +270,43 @@ const handleInviteAction = async () => {
   }
 };
 
-const handlePurchaseDressUp = (_dressUpItemId: number) => {
-  // handle purchase dress up for team task
-  // similar logic as MillionCheckinModule
+const handlePurchaseDressUp = (dressUpItemId: number) => {
+  const targetItem = millionDressUpList.find((item) => item.itemId === dressUpItemId);
+  if (!targetItem) {
+    showToast("未找到装扮配置");
+    return;
+  }
+  const unitPrice = teamChestInfo.value?.singleParticipationAmount ?? 0;
+  if (unitPrice <= 0) {
+    showToast("当前活动暂不可购买");
+    return;
+  }
+  selectedDressUpItem.value = {
+    id: targetItem.itemId,
+    price: unitPrice,
+    image: targetItem.image,
+    name: targetItem.name,
+  };
+  pendingJoinQuantity.value = 1;
+  purchasePopupVisible.value = true;
+};
+
+const loadTeamChestPrizeList = async () => {
+  if (moduleStatus.value === TeamModuleStatus.NoQualification) {
+    teamChestPrizeList.value = [];
+    return;
+  }
+  const response = await getTeamChestPrizeList();
+  teamChestPrizeList.value = resolveApiResult(response);
+};
+
+const handleClosePurchasePopup = () => {
+  purchasePopupVisible.value = false;
+  pendingJoinQuantity.value = 1;
+};
+
+const handlePurchaseSuccess = async () => {
+  await loadTeamChestDetail();
 };
 
 onMounted(() => {
