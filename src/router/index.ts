@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 // 2. 定义一些路由
 const routes = [
-  { path: '/', component: () => import('../pages/home/index.vue') },
+  { path: '/page/chest/index.html', component: () => import('../pages/home/index.vue') },
+  { path: '/:pathMatch(.*)*', redirect: '/page/chest/index.html' },
 ]
 
 // 3. 创建路由实例并传递 `routes` 配置
