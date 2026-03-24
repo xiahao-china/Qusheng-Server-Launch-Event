@@ -22,11 +22,11 @@ export const JSBridge = (key: string, data: any = {}) => {
         : win.nativeJsBridge[key]();
       resolveCb(res);
     } else if (
-      win.webkit &&
-      win.webkit.messageHandlers &&
-      win.webkit.messageHandlers.nativeJsBridge
+        (window as any).webkit &&
+        (window as any).webkit.messageHandlers &&
+        (window as any).webkit.messageHandlers.nativeJsBridge
     ) {
-      win.webkit.messageHandlers.nativeJsBridge.postMessage(uri);
+        (window as any).webkit.messageHandlers.nativeJsBridge.postMessage(uri);
       resolveCb(undefined);
     } else {
       resolve(false);

@@ -52,17 +52,13 @@
           <h3 class="activity-popup-title">组团成功参与活动获得限定礼物</h3>
         </div>
 
-        <img class="million-purchase-popup-image" :src="mountUrl" :alt="mountConfig?.mountName" />
+        <img class="million-purchase-popup-image" :src="mountConfig?.specialGiftIconUrl" :alt="mountConfig?.specialGiftName" />
         <div class="million-reward-platform-lar ">
           <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
-          <p class="million-reward-name">{{ mountConfig?.mountName }}</p>
+          <p class="million-reward-name">{{ mountConfig?.specialGiftName }}</p>
         </div>
 
         <div class="rename-action-row">
-          <button class="rename-action-btn" type="button" @click="emitClose">
-            <img :src="millionCheckinAssets.cancelButton" alt="取消" />
-            <div class="text">取消</div>
-          </button>
           <button class="rename-action-btn" type="button" @click="emitSubmit">
             <img :src="millionCheckinAssets.confirmButton" alt="确定" />
             <div class="text">确定</div>
@@ -81,9 +77,8 @@
 import { ref, computed, onMounted } from "vue";
 import { showToast } from "vant";
 import { initTeamChest, getTeamChestPrizeList } from "@/api/chest/teamChest";
-import type {IPrizeItem, ITeamMountConfig} from "@/api/chest/types";
+import type {IPrizeItem} from "@/api/chest/types";
 import { millionCheckinAssets } from "../MillionCheckinModule/const";
-import {getTeamMountConfig} from "@/api/chest/team.ts";
 
 const emit = defineEmits<{
   (event: "close"): void;
@@ -95,34 +90,12 @@ const step = ref(1);
 const selectedPrizeId = ref<number | null>(null);
 const quantity = ref(1);
 const operating = ref(false);
-const mountConfig = ref<ITeamMountConfig | null>(null);
+const mountConfig = ref<{specialGiftIconUrl: string; specialGiftName: string} | null>(null);
 
 
 const hasEnd = ref(false);
 
 const selections = ref<{ itemId: number; quantity: number }[]>([]);
-
-const loadConfig = async () => {
-  try {
-    const response = await getTeamMountConfig();
-    if (response.code === 200) {
-      mountConfig.value = response.data;
-    } else {
-      showToast(response.msg || "获取坐骑配置失败");
-    }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "获取坐骑配置失败";
-    showToast(message);
-  }
-};
-
-const mountUrl = computed(() => {
-  const url = mountConfig.value?.mountUrl;
-  if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
-    return `https://${url}`;
-  }
-  return url;
-});
 
 const title = computed(() => {
   const stepMap: Record<number, string> = {
@@ -208,6 +181,10 @@ const emitNext = async () => {
     if (response.code !== 200) {
       throw new Error(response.msg || "发起战队宝箱失败");
     }
+    mountConfig.value = {
+      specialGiftIconUrl: (response.data as any).specialGiftIconUrl,
+      specialGiftName: (response.data as any).specialGiftName,
+    };
     showToast("战队宝箱发起成功");
     hasEnd.value = true;
   } catch (error) {
@@ -218,9 +195,6 @@ const emitNext = async () => {
   }
 };
 
-onMounted(() => {
-  loadConfig();
-});
 </script>
 
 <style lang="less" scoped>

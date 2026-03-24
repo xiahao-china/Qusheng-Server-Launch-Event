@@ -23,5 +23,5 @@ export const getUrlParams = (url?: string): Record<string, string> => {
  * @returns token值
  */
 export const getToken = (): string | null => {
-  return getUrlParams().token || null;
+  return getUrlParams().userToken || null;
 };

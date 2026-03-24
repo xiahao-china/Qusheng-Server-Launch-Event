@@ -49,35 +49,7 @@ const emit = defineEmits<{
 }>();
 
 const rewardList = computed(() => {
-  if (!chestInfo.value) {
-    return millionPrizeFallbackList;
-  }
-  return [
-    {
-      id: 1,
-      itemId: chestInfo.value.firstPrizeItemId,
-      name: `奖品ID ${chestInfo.value.firstPrizeItemId}`,
-      label: "一等奖",
-      image: millionPrizeFallbackList[0].image,
-      quantity: chestInfo.value.firstPrizeQuantity,
-    },
-    {
-      id: 2,
-      itemId: chestInfo.value.secondPrizeItemId,
-      name: `奖品ID ${chestInfo.value.secondPrizeItemId}`,
-      label: "二等奖",
-      image: millionPrizeFallbackList[1].image,
-      quantity: chestInfo.value.secondPrizeQuantity,
-    },
-    {
-      id: 3,
-      itemId: chestInfo.value.thirdPrizeItemId,
-      name: `奖品ID ${chestInfo.value.thirdPrizeItemId}`,
-      label: "三等奖",
-      image: millionPrizeFallbackList[2].image,
-      quantity: chestInfo.value.thirdPrizeQuantity,
-    },
-  ];
+  return millionPrizeFallbackList;
 });
 
 const progressPercent = computed(() => {

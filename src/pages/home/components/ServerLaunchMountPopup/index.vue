@@ -33,7 +33,7 @@
             <span>{{ mountConfig?.price }}</span>
           </p>
           <p class="million-purchase-popup-balance" @click="handleRecharge">
-            我的余额：<img :src="millionCheckinAssets.diamond" alt="钻石" /> <span>{{ balance }}</span> 充值
+            我的余额：<img :src="millionCheckinAssets.diamond" alt="钻石" /> <span>{{ balance }}</span> <p v-if="!isios">充值</p>
           </p>
           <div class="million-purchase-popup-action-row">
             <button class="million-purchase-popup-btn" type="button" :disabled="submitting" @click="emit('close')">
@@ -67,6 +67,7 @@ import { getWalletAmount } from "@/api/user";
 import { rechargeMoney } from "@/util/bridge";
 import type { ITeamMountConfig } from "@/api/chest/types";
 import { millionCheckinAssets } from "../MillionCheckinModule/const";
+import {isIOS} from "@/util/platform.ts";
 
 const emit = defineEmits<{
   (event: "close"): void;
@@ -77,6 +78,8 @@ const mountConfig = ref<ITeamMountConfig | null>(null);
 const submitting = ref(false);
 const success = ref(false);
 const balance = ref(0);
+const isios = isIOS();
+
 
 const popupTitle = computed(() => {
   return success.value ? "恭喜你" : "获得开服座驾";

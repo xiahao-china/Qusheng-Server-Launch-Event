@@ -25,7 +25,7 @@
             <button class="million-purchase-popup-step-btn" type="button" :disabled="localQuantity <= 1"
                     @click="handleMinus">-
             </button>
-            <span class="million-purchase-popup-quantity">{{ localQuantity }}个</span>
+            <span class="million-purchase-popup-quantity"><input type="number" min="1" max="999" v-model="localQuantity" />个</span>
             <button class="million-purchase-popup-step-btn" type="button" :disabled="localQuantity >= 99"
                     @click="handlePlus">+
             </button>
@@ -35,7 +35,7 @@
             <span>{{ totalPrice }}</span>
           </p>
           <p class="million-purchase-popup-balance" @click="handleRecharge">我的余额：<img
-              :src="millionCheckinAssets.diamond" alt="钻石"/> <span>{{ balance }}</span> 充值</p>
+              :src="millionCheckinAssets.diamond" alt="钻石"/> <span>{{ balance }}</span> <p v-if="!isios">充值</p></p>
           <div class="million-purchase-popup-action-row">
             <button class="million-purchase-popup-btn" type="button" :disabled="submitting" @click="emit('close')">
               <img :src="millionCheckinAssets.cancelButton" alt="取消"/>
@@ -71,6 +71,7 @@ import {getWalletAmount} from "@/api/user";
 import {rechargeMoney} from "@/util/bridge";
 import {millionCheckinAssets} from "../../const";
 import type {IPurchaseItem} from "../MillionTaskSection/const";
+import {isIOS} from "@/util/platform.ts";
 
 const props = defineProps<{
   dressUpItem: IPurchaseItem;
@@ -87,6 +88,8 @@ const localQuantity = ref(1);
 const submitting = ref(false);
 const isSuccess = ref(false);
 const balance = ref(0);
+const isios = isIOS();
+
 
 const loadWalletAmount = async () => {
   try {

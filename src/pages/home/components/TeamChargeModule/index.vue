@@ -49,11 +49,11 @@
       :team-id="String(teamInfo?.teamId || '')"
       @close="closeSharePopup"
     />
-    <AddressPopup
-      v-if="addressPopupVisible"
-      @close="closeAddressPopup"
-      @success="handleAddressSuccess"
-    />
+<!--    <AddressPopup-->
+<!--      v-if="addressPopupVisible"-->
+<!--      @close="closeAddressPopup"-->
+<!--      @success="handleAddressSuccess"-->
+<!--    />-->
     <MillionPurchasePopup
       v-if="purchasePopupVisible && selectedDressUpItem"
       :dress-up-item="selectedDressUpItem"
@@ -81,7 +81,7 @@ import ServerLaunchMountPopup from "../ServerLaunchMountPopup/index.vue";
 import RenameTeamPopup from "../RenameTeamPopup/index.vue";
 import InitiateActivityPopup from "../InitiateActivityPopup/index.vue";
 import SharePopup from "../SharePopup/index.vue";
-import AddressPopup from "../AddressPopup/index.vue";
+// import AddressPopup from "../AddressPopup/index.vue";
 import LuckySection from "../LuckySection/index.vue";
 import { millionDressUpList } from "../MillionCheckinModule/components/MillionTaskSection/const";
 import type { IPurchaseItem } from "../MillionCheckinModule/components/MillionTaskSection/const";
@@ -256,13 +256,13 @@ const openAddressPopup = () => {
   addressPopupVisible.value = true;
 };
 
-const closeAddressPopup = () => {
-  addressPopupVisible.value = false;
-};
-
-const handleAddressSuccess = () => {
-  addressPopupVisible.value = false;
-};
+// const closeAddressPopup = () => {
+//   addressPopupVisible.value = false;
+// };
+//
+// const handleAddressSuccess = () => {
+//   addressPopupVisible.value = false;
+// };
 
 const handleInitiateSuccess = async () => {
   initiatePopupVisible.value = false;

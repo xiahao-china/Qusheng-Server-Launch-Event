@@ -2,7 +2,7 @@ import { post } from "@/util/request";
 import { IApiResponse, IChestInfo, IInitTeamChestPayload, IJoinTeamChestPayload, ITeamHistoryItem, IPrizeItem } from "@/api/chest/types";
 
 export const initTeamChest = (payload: IInitTeamChestPayload): Promise<IApiResponse<IChestInfo>> => {
-  return post<IApiResponse<IChestInfo>>("/act/chest/team/init", payload);
+  return post<IApiResponse<IChestInfo & {specialGiftIconUrl: string; specialGiftName: string}>>("/act/chest/team/init", payload);
   // return Promise.resolve({
   //   code: 200,
   //   msg: "success",
