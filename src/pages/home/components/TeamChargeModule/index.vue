@@ -1,16 +1,17 @@
 <template>
   <section class="team-charge-module">
     <NoticeSection :notice-text-list="noticeTextList" />
+    <TeamSwitchTab v-model="currentTab" />
     <TeamQualificationSection
-      v-if="moduleStatus === TeamModuleStatus.NoQualification && !orderTeamId"
+      v-if="moduleStatus === TeamModuleStatus.NoQualification && currentTab === TeamTab.MY"
       :mount-config="teamMountConfig"
-      @action="handleInviteAction"
+      @action="mountPopupVisible = true"
     />
     <TeamInitiateSection
-      v-else-if="moduleStatus === TeamModuleStatus.Opened && !orderTeamId"
+      v-else-if="moduleStatus === TeamModuleStatus.Opened && currentTab === TeamTab.MY"
       :team-name="teamInfo?.teamName || '我的战队'"
-      @rename="renameCurrentTeam"
-      @initiate="initTeamChestWithDefault"
+      @rename="renamePopupVisible = true"
+      @initiate="initiatePopupVisible = true"
     />
     <TeamTaskSection
       v-else
@@ -21,22 +22,22 @@
       :progress-percent="progressPercent"
       :chest-status="teamChestInfo?.status ?? 0"
       @show-rule="(type) => emit('show-rule', type)"
-      @show-records="showRecords"
-      @share="handleShare"
+      @show-records="emit('mode-change', 'show-records')"
+      @share="sharePopupVisible = true"
       @purchase="handlePurchaseDressUp"
-      @click-prize="openAddressPopup"
+      @click-prize="addressPopupVisible = true"
     />
     <LuckySection :chest-type="2" :team-id="teamInfo?.teamId ? String(teamInfo.teamId) : undefined" />
     <!-- <BoardSection :rank-list="rankDisplayList" /> -->
     <ServerLaunchMountPopup
       v-if="mountPopupVisible"
-      @close="closeMountPopup"
+      @close="mountPopupVisible = false"
       @success="handleMountSuccess"
     />
     <RenameTeamPopup
       v-if="renamePopupVisible"
       :initial-name="teamInfo?.teamName || ''"
-      @close="closeRenamePopup"
+      @close="renamePopupVisible = false"
       @success="handleRenameSuccess"
     />
     <InitiateActivityPopup
@@ -47,7 +48,7 @@
     <SharePopup
       v-if="sharePopupVisible"
       :team-id="String(teamInfo?.teamId || '')"
-      @close="closeSharePopup"
+      @close="sharePopupVisible = false"
     />
 <!--    <AddressPopup-->
 <!--      v-if="addressPopupVisible"-->
@@ -61,17 +62,17 @@
       purchase-mode="team"
       :team-id="teamInfo?.teamId ? String(teamInfo.teamId) : ''"
       @close="handleClosePurchasePopup"
-      @success="handlePurchaseSuccess"
+      @success="loadTeamChestDetail"
     />
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { showToast } from "vant";
-import {getTeamMountConfig, getTeamQualificationInfo, getTeamQualificationInfoDetail} from "@/api/chest/team";
-import { getTeamChestDetail, getTeamChestHistory, getTeamChestPrizeList } from "@/api/chest/teamChest";
-import type { IChestInfo, IPrizeItem, ITeamHistoryItem, ITeamMountConfig, ITeamQualificationInfo } from "@/api/chest/types";
+import {computed, onMounted, ref} from "vue";
+import {showToast} from "vant";
+import {getTeamMountConfig} from "@/api/chest/team";
+import {getTeamChestDetail, getTeamChestPrizeList} from "@/api/chest/teamChest";
+import type {IChestInfo, IPrizeItem, ITeamMountConfig, ITeamQualificationInfo} from "@/api/chest/types";
 import NoticeSection from "../NoticeSection/index.vue";
 import MillionPurchasePopup from "../MillionCheckinModule/components/MillionPurchasePopup/index.vue";
 import TeamQualificationSection from "../TeamQualificationSection/index.vue";
@@ -80,12 +81,14 @@ import TeamTaskSection from "../TeamTaskSection/index.vue";
 import ServerLaunchMountPopup from "../ServerLaunchMountPopup/index.vue";
 import RenameTeamPopup from "../RenameTeamPopup/index.vue";
 import InitiateActivityPopup from "../InitiateActivityPopup/index.vue";
+import TeamSwitchTab from "../TeamSwitchTab/index.vue";
 import SharePopup from "../SharePopup/index.vue";
 // import AddressPopup from "../AddressPopup/index.vue";
 import LuckySection from "../LuckySection/index.vue";
-import { millionDressUpList } from "../MillionCheckinModule/components/MillionTaskSection/const";
-import type { IPurchaseItem } from "../MillionCheckinModule/components/MillionTaskSection/const";
-import { composeTeamPrizeList, TeamModuleStatus, resolveApiResult } from "./const";
+import type {IPurchaseItem} from "../MillionCheckinModule/components/MillionTaskSection/const";
+import {millionDressUpList} from "../MillionCheckinModule/components/MillionTaskSection/const";
+import {composeTeamPrizeList, loadTeamInfo, resolveApiResult, TeamModuleStatus, TeamTab} from "./const";
+import {getUserInfo} from "@/api/user.ts";
 
 const emit = defineEmits<{
   (event: "show-rule", type: string): void;
@@ -96,8 +99,7 @@ const teamInfo = ref<ITeamQualificationInfo | null>(null);
 const teamMountConfig = ref<ITeamMountConfig | null>(null);
 const teamChestInfo = ref<IChestInfo | null>(null);
 const teamChestPrizeList = ref<IPrizeItem[]>([]);
-const historyList = ref<ITeamHistoryItem[]>([]);
-const selectedHistoryIndex = ref(0);
+const currentTab = ref<TeamTab>(TeamTab.MY);
 const mountPopupVisible = ref(false);
 const renamePopupVisible = ref(false);
 const initiatePopupVisible = ref(false);
@@ -109,19 +111,13 @@ const pendingJoinQuantity = ref(1);
 
 const orderTeamId = ref<string | undefined>(undefined);
 
-const moduleStatus = computed<TeamModuleStatus>(() => {
-  if (!teamInfo.value?.hasTeam) {
-    return TeamModuleStatus.NoQualification;
-  }
-  console.log('teamChestInfo.value?.status', teamChestInfo.value?.status);
-  if (teamChestInfo.value?.status) {
-    return TeamModuleStatus.Initiated;
-  }
-  return TeamModuleStatus.Opened;
-});
+const moduleStatus = ref<TeamModuleStatus>(TeamModuleStatus.NoQualification);
 
 const loading = ref(false);
 
+/**
+ * 格式化通知文本列表
+ */
 const noticeTextList = computed(() => {
   if (!teamChestInfo.value?.participants?.length) {
     return ["暂无最新战队打卡动态"];
@@ -131,6 +127,9 @@ const noticeTextList = computed(() => {
   });
 });
 
+/**
+ * 组装战队奖品列表数据
+ */
 const teamPrizeList = computed(() => {
   if (teamChestInfo.value) {
     return composeTeamPrizeList(teamChestInfo.value, teamChestPrizeList.value);
@@ -138,6 +137,9 @@ const teamPrizeList = computed(() => {
   return [];
 });
 
+/**
+ * 计算宝箱进度百分比
+ */
 const progressPercent = computed(() => {
   if (!teamChestInfo.value || teamChestInfo.value.totalOpenTimes <= 0) {
     return 0;
@@ -146,60 +148,64 @@ const progressPercent = computed(() => {
   return Math.max(0, Math.min(rawValue, 100));
 });
 
-const loadTeamInfo = async (teamId?: number | string) => {
-  if (teamId){
-    const response = await getTeamQualificationInfoDetail(teamId.toString());
-    teamInfo.value = resolveApiResult(response);
-    return;
-  }
-  const response = await getTeamQualificationInfo();
-  teamInfo.value = resolveApiResult(response);
-};
-
+/**
+ * 加载开通战队所需的坐骑配置
+ */
 const loadMountConfig = async () => {
   const response = await getTeamMountConfig();
   teamMountConfig.value = resolveApiResult(response);
 };
 
+/**
+ * 加载战队宝箱详情
+ * @param orderTeamId 可选的特定战队ID
+ */
 const loadTeamChestDetail = async (orderTeamId?: string) => {
   const teamId = orderTeamId ? orderTeamId : teamInfo.value?.teamId;
-  if (moduleStatus.value === TeamModuleStatus.NoQualification || !teamId) {
-    teamChestInfo.value = null;
-    return;
-  }
   const response = await getTeamChestDetail(String(teamId));
   teamChestInfo.value = resolveApiResult(response);
-};
-
-const loadTeamHistory = async () => {
-  if (moduleStatus.value === TeamModuleStatus.NoQualification) {
-    historyList.value = [];
-    selectedHistoryIndex.value = 0;
-    return;
+  if (teamChestInfo.value?.status) {
+    moduleStatus.value = TeamModuleStatus.Initiated;
+    currentTab.value = orderTeamId ? TeamTab.OTHER: TeamTab.MY;
   }
-  const response = await getTeamChestHistory();
-  historyList.value = resolveApiResult(response);
-  selectedHistoryIndex.value = 0;
 };
 
+/**
+ * 初始化组件数据
+ */
 const init = async () => {
   if (loading.value) {
     return;
   }
   loading.value = true;
   try {
+    // 有id 战队 获取战队详情判断我的还是其他 切换重新init合适的数据给TeamTaskSection
+    // 无id 战队 默认我的 切换重新init合适的数据给TeamTaskSection
     const urlParams = new URLSearchParams(window.location.search);
     const teamId = urlParams.get("teamId");
     orderTeamId.value = teamId || undefined;
-    await loadTeamInfo(teamId || undefined);
-    if (moduleStatus.value === TeamModuleStatus.NoQualification) {
+    teamInfo.value = await loadTeamInfo(teamId || undefined);
+    const userInfo = await getUserInfo();
+    // 判断是否是当前我的战队
+    if (teamInfo.value?.ownerUserId?.toString() === userInfo.data.result?.userNumber) {
+      currentTab.value = TeamTab.MY;
+    }else {
+      // 非我的战队又没资格 切换到我的战队
+      if (!teamInfo.value?.hasTeam){
+        orderTeamId.value = undefined;
+        currentTab.value = TeamTab.MY;
+        teamInfo.value = await loadTeamInfo(undefined);
+      }
+    }
+
+    if (!teamInfo.value?.hasTeam) {
+      moduleStatus.value = TeamModuleStatus.NoQualification;
       await loadMountConfig();
-      historyList.value = [];
       teamChestInfo.value = null;
       teamChestPrizeList.value = [];
       return;
     }
-    await Promise.all([loadTeamChestDetail(teamId || undefined), loadTeamHistory(), loadTeamChestPrizeList()]);
+    await Promise.all([loadTeamChestDetail(orderTeamId.value), loadTeamChestPrizeList()]);
   } catch (error) {
     const message = error instanceof Error ? error.message : "加载战队信息失败";
     showToast(message);
@@ -208,78 +214,35 @@ const init = async () => {
   }
 };
 
-const closeMountPopup = () => {
-  mountPopupVisible.value = false;
-};
-
+/**
+ * 坐骑购买/战队开通成功回调
+ */
 const handleMountSuccess = async () => {
   mountPopupVisible.value = false;
   await init();
 };
 
-const createTeamAndRefresh = async () => {
-  mountPopupVisible.value = true;
-};
-
-const renameCurrentTeam = async () => {
-  if (moduleStatus.value === TeamModuleStatus.NoQualification) {
-    return;
-  }
-  renamePopupVisible.value = true;
-};
-
-const closeRenamePopup = () => {
-  renamePopupVisible.value = false;
-};
-
+/**
+ * 战队重命名成功回调
+ */
 const handleRenameSuccess = async () => {
   renamePopupVisible.value = false;
   await init();
 };
 
-const initTeamChestWithDefault = async () => {
-  if (moduleStatus.value === TeamModuleStatus.NoQualification) {
-    return;
-  }
-  initiatePopupVisible.value = true;
-};
-
-const handleShare = () => {
-  sharePopupVisible.value = true;
-};
-
-const closeSharePopup = () => {
-  sharePopupVisible.value = false;
-};
-
-const openAddressPopup = () => {
-  addressPopupVisible.value = true;
-};
-
-// const closeAddressPopup = () => {
-//   addressPopupVisible.value = false;
-// };
-//
-// const handleAddressSuccess = () => {
-//   addressPopupVisible.value = false;
-// };
-
+/**
+ * 发起战队活动成功回调
+ */
 const handleInitiateSuccess = async () => {
   initiatePopupVisible.value = false;
   await init();
 };
 
-const showRecords = () => {
-  emit("mode-change", "show-records");
-};
 
-const handleInviteAction = async () => {
-  if (moduleStatus.value === TeamModuleStatus.NoQualification) {
-    await createTeamAndRefresh();
-    return;
-  }
-};
-
+/**
+ * 处理购买装扮参与活动的点击动作
+ * @param dressUpItemId 装扮项ID
+ */
 const handlePurchaseDressUp = (dressUpItemId: number) => {
   const targetItem = millionDressUpList.find((item) => item.itemId === dressUpItemId);
   if (!targetItem) {
@@ -297,6 +260,9 @@ const handlePurchaseDressUp = (dressUpItemId: number) => {
   purchasePopupVisible.value = true;
 };
 
+/**
+ * 加载战队宝箱奖品配置列表
+ */
 const loadTeamChestPrizeList = async () => {
   if (moduleStatus.value === TeamModuleStatus.NoQualification) {
     teamChestPrizeList.value = [];
@@ -306,15 +272,15 @@ const loadTeamChestPrizeList = async () => {
   teamChestPrizeList.value = resolveApiResult(response);
 };
 
+/**
+ * 关闭购买/参与弹窗并重置待选数量
+ */
 const handleClosePurchasePopup = () => {
   purchasePopupVisible.value = false;
   pendingJoinQuantity.value = 1;
 };
 
-const handlePurchaseSuccess = async () => {
-  await loadTeamChestDetail();
-};
-
+// 初始化加载
 onMounted(() => {
   init();
 });

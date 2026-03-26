@@ -1,8 +1,57 @@
+const jsbridgeMap:any = {
+    sdk: {
+        getNativeToken: 'setUserToken',
+        getNativeRoomId: 'setRoomId',
+        getNativeParam: 'setUserNumber',
+        getNativeUserId: 'setUserId',
+        getAppInfo: 'getNativeUbsInfo',
+        getAppVersion: 'setAppVersion',
+        contactCustomerService: '',
+        openWhats: '',
+        openMessage: '',
+        jsToCommunityIssued: 'jsToCommunityIssued',
+        jsOpenNativePage: '',
+        nativeShare: 'ComponentShareMethod',
+        jsActShare: '',
+        jsOpenGiftsPanel: '',
+        jsToNativePay: 'jsToNativePay',
+        postMessage: '',
+        startRecord: 'startRecord',
+        saveRecord: 'saveRecord',
+        saveImageToLocal: 'saveImageToLocal',
+        savedAvatarModel: 'savedAvatarModel',
+        getStatusBarHeight: 'setStatusHeight',
+        jsLocalPay: 'jsLocalPay'
+    },
+    track: {
+        getNativeUbsInfo: 'getNativeUbsInfo'
+    }
+};
+
+const keyMap:any = {
+    sdk: 'app',
+    track: 'EventTracking'
+};
+
 export const JSBridge = (key: string, data: any = {}) => {
   return new Promise((resolve) => {
     if (!key) {
       return resolve(false);
     }
+
+      let useKey = '';
+
+      try {
+          useKey = Object.keys(keyMap).filter((k) => ~Object.keys(jsbridgeMap[k]).indexOf(key))[0];
+      } catch (e) {}
+
+      if (!useKey) {
+          Promise.reject(new Error(`"${key}" Key Not In Preset`));
+          return;
+      }
+
+      const cb = jsbridgeMap[useKey][key];
+      const jsKey = keyMap[useKey];
 
     const resolveCb = (resData: any) => {
       try {
@@ -12,7 +61,16 @@ export const JSBridge = (key: string, data: any = {}) => {
       }
     };
 
-    const uri = { ...data, __functionName: key };
+      if (cb) {
+          if (!window[jsKey]) {
+              (window as any)[jsKey] = {};
+          }
+          (window as any)[jsKey][cb] = (res: any) => {
+              resolveCb(res);
+          };
+      }
+
+      const uri = { ...data, ...{ __functionName: key }, ...(cb ? { name: `${jsKey}.${cb}` } : {}) };
 
     const win = window as any;
 
@@ -27,7 +85,9 @@ export const JSBridge = (key: string, data: any = {}) => {
         (window as any).webkit.messageHandlers.nativeJsBridge
     ) {
         (window as any).webkit.messageHandlers.nativeJsBridge.postMessage(uri);
-      resolveCb(undefined);
+        if (!cb) {
+            resolveCb(undefined);
+        }
     } else {
       resolve(false);
     }

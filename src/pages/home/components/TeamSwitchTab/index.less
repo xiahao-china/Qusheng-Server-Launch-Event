@@ -1,0 +1,36 @@
+.team-switch-tab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  .switch-item {
+    width: 97px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    .item-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: #FFFFFF;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    &.active {
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+  .switch-item:first-child{
+    margin-right: 80px;
+  }
+}
