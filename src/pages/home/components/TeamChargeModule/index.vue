@@ -21,11 +21,14 @@
       :dress-up-list="millionDressUpList"
       :progress-percent="progressPercent"
       :chest-status="teamChestInfo?.status ?? 0"
+      :current-tab="currentTab"
+      :order-team-id="orderTeamId"
       @show-rule="(type) => emit('show-rule', type)"
       @show-records="emit('mode-change', 'show-records')"
       @share="sharePopupVisible = true"
       @purchase="handlePurchaseDressUp"
       @click-prize="addressPopupVisible = true"
+      @search="handleSearch"
     />
     <LuckySection :chest-type="2" :team-id="teamInfo?.teamId ? String(teamInfo.teamId) : undefined" />
     <!-- <BoardSection :rank-list="rankDisplayList" /> -->
@@ -68,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {showToast} from "vant";
 import {getTeamMountConfig} from "@/api/chest/team";
 import {getTeamChestDetail, getTeamChestPrizeList} from "@/api/chest/teamChest";
@@ -158,16 +161,36 @@ const loadMountConfig = async () => {
 
 /**
  * 加载战队宝箱详情
- * @param orderTeamId 可选的特定战队ID
+ * @param searchId 可选的特定战队ID
  */
-const loadTeamChestDetail = async (orderTeamId?: string) => {
-  const teamId = orderTeamId ? orderTeamId : teamInfo.value?.teamId;
-  const response = await getTeamChestDetail(String(teamId));
-  teamChestInfo.value = resolveApiResult(response);
-  if (teamChestInfo.value?.status) {
-    moduleStatus.value = TeamModuleStatus.Initiated;
-    currentTab.value = orderTeamId ? TeamTab.OTHER: TeamTab.MY;
+const loadTeamChestDetail = async (searchId?: string) => {
+  const teamId = searchId ? searchId : teamInfo.value?.teamId;
+  if (!teamId) {
+    teamChestInfo.value = null;
+    return;
   }
+  try {
+    const response = await getTeamChestDetail(String(teamId));
+    teamChestInfo.value = resolveApiResult(response);
+    if (teamChestInfo.value?.status) {
+      searchId && (currentTab.value = TeamTab.OTHER);
+      moduleStatus.value = TeamModuleStatus.Initiated;
+    }else {
+      moduleStatus.value = TeamModuleStatus.Opened;
+    }
+  } catch (error) {
+    teamChestInfo.value = null;
+    console.error("Failed to load team chest detail:", error);
+  }
+};
+
+/**
+ * 处理战队搜索
+ * @param teamId 搜索的战队ID
+ */
+const handleSearch = async (teamId: string) => {
+     orderTeamId.value = teamId;
+    await init();
 };
 
 /**
@@ -181,23 +204,12 @@ const init = async () => {
   try {
     // 有id 战队 获取战队详情判断我的还是其他 切换重新init合适的数据给TeamTaskSection
     // 无id 战队 默认我的 切换重新init合适的数据给TeamTaskSection
-    const urlParams = new URLSearchParams(window.location.search);
-    const teamId = urlParams.get("teamId");
-    orderTeamId.value = teamId || undefined;
-    teamInfo.value = await loadTeamInfo(teamId || undefined);
-    const userInfo = await getUserInfo();
-    // 判断是否是当前我的战队
-    if (teamInfo.value?.ownerUserId?.toString() === userInfo.data.result?.userNumber) {
+    teamInfo.value = await loadTeamInfo(orderTeamId.value || undefined);
+    if (!teamInfo.value?.hasTeam){
+      orderTeamId.value = undefined;
       currentTab.value = TeamTab.MY;
-    }else {
-      // 非我的战队又没资格 切换到我的战队
-      if (!teamInfo.value?.hasTeam){
-        orderTeamId.value = undefined;
-        currentTab.value = TeamTab.MY;
-        teamInfo.value = await loadTeamInfo(undefined);
-      }
+      teamInfo.value = await loadTeamInfo(undefined);
     }
-
     if (!teamInfo.value?.hasTeam) {
       moduleStatus.value = TeamModuleStatus.NoQualification;
       await loadMountConfig();
@@ -205,7 +217,8 @@ const init = async () => {
       teamChestPrizeList.value = [];
       return;
     }
-    await Promise.all([loadTeamChestDetail(orderTeamId.value), loadTeamChestPrizeList()]);
+    await loadTeamChestDetail(orderTeamId.value);
+    await loadTeamChestPrizeList();
   } catch (error) {
     const message = error instanceof Error ? error.message : "加载战队信息失败";
     showToast(message);
@@ -282,7 +295,22 @@ const handleClosePurchasePopup = () => {
 
 // 初始化加载
 onMounted(() => {
-  init();
+    const urlParams = new URLSearchParams(window.location.search);
+    const teamId = urlParams.get("teamId");
+    orderTeamId.value = teamId || undefined;
+    init();
+});
+
+// 监听标签切换
+watch(currentTab, async (newTab) => {
+  if (newTab === TeamTab.MY) {
+    // 切换到我的战队，清除搜索 ID 并重新初始化
+    orderTeamId.value = undefined;
+    await init();
+  } else if (newTab === TeamTab.OTHER && !orderTeamId.value) {
+    // 切换到其他战队但还没有搜索 ID 时，展示空状态
+    teamChestInfo.value = null;
+  }
 });
 
 </script>
