@@ -4,6 +4,8 @@
     <MillionRewardSection :reward-list="rewardList" />
     <MillionTaskSection
       :progress-percent="progressPercent"
+      :cur-num="chestInfo?.currentParticipationCount ?? 0"
+      :total="chestInfo?.totalOpenTimes ?? 0"
       :chest-status="chestInfo?.status ?? 0"
       :current-participation-count="chestInfo?.currentParticipationCount ?? 0"
       :total-open-times="chestInfo?.totalOpenTimes ?? 0"
@@ -29,6 +31,7 @@ import { computed, onMounted, ref } from "vue";
 import { showToast } from "vant";
 import { getGlobalChestInfo } from "@/api/chest/global";
 import type { IChestInfo } from "@/api/chest/types";
+import type { IMillionPrizeDisplayItem } from "./const";
 import NoticeSection from "../NoticeSection/index.vue";
 import MillionPurchasePopup from "./components/MillionPurchasePopup/index.vue";
 import LuckySection from "../LuckySection/index.vue";
@@ -48,7 +51,44 @@ const emit = defineEmits<{
   (event: "show-rule", type: string): void;
 }>();
 
-const rewardList = computed(() => {
+const rewardList = computed<IMillionPrizeDisplayItem[]>(() => {
+  if (chestInfo.value) {
+    const {
+      firstPrizeItemId, firstPrizeName, firstPrizeImageUrl, firstPrizeQuantity,
+      secondPrizeItemId, secondPrizeName, secondPrizeImageUrl, secondPrizeQuantity,
+      thirdPrizeItemId, thirdPrizeName, thirdPrizeImageUrl, thirdPrizeQuantity
+    } = chestInfo.value;
+
+    // 检查是否有有效的接口数据（以第一名奖品名称存在为准）
+    if (firstPrizeName) {
+      return [
+        {
+          id: 1,
+          itemId: firstPrizeItemId,
+          name: firstPrizeName,
+          label: "一等奖",
+          image: firstPrizeImageUrl,
+          quantity: firstPrizeQuantity
+        },
+        {
+          id: 2,
+          itemId: secondPrizeItemId,
+          name: secondPrizeName,
+          label: "二等奖",
+          image: secondPrizeImageUrl,
+          quantity: secondPrizeQuantity
+        },
+        {
+          id: 3,
+          itemId: thirdPrizeItemId,
+          name: thirdPrizeName,
+          label: "三等奖",
+          image: thirdPrizeImageUrl,
+          quantity: thirdPrizeQuantity
+        }
+      ];
+    }
+  }
   return millionPrizeFallbackList;
 });
 

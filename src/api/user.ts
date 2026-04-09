@@ -35,6 +35,16 @@ export const getUserInfo = async (): Promise<IApiResponse<{ result: IUserInfo }>
   // });
 };
 
+/**
+ * 查询指定用户信息
+ * @param targetUid 目标用户ID
+ */
+export const getMyInfoV2 = async (targetUid: string): Promise<IApiResponse<IUserInfo>> => {
+  return get<IApiResponse<IUserInfo>>("/intf/userCtrl/myInfo/V2", {
+    params: { targetUid },
+  });
+};
+
 export const getWalletAmount = async (): Promise<IApiResponse<IWalletAmount>> => {
   return post<IApiResponse<IWalletAmount>>("/base/wallet/amount");
   // return Promise.resolve({

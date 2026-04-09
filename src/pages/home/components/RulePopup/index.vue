@@ -8,10 +8,13 @@
             <h3 class="activity-popup-title">活动规则</h3>
           </div>
           <p class="activity-popup-subtitle">{{ currentSubtitle }}</p>
-          <section v-for="item in currentRuleSections" :key="item.title" class="activity-popup-block">
-            <h4 class="activity-popup-block-title">{{ item.title }}</h4>
-            <p v-for="line in item.content" :key="line" class="activity-popup-line">{{ line }}</p>
-          </section>
+          <div v-if="ruleContent" class="activity-popup-html" v-html="ruleContent"></div>
+          <template v-else>
+            <section v-for="item in currentRuleSections" :key="item.title" class="activity-popup-block">
+              <h4 class="activity-popup-block-title">{{ item.title }}</h4>
+              <p v-for="line in item.content" :key="line" class="activity-popup-line">{{ line }}</p>
+            </section>
+          </template>
         </div>
       </div>
     </section>
@@ -19,9 +22,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { activityRuleSections, millionCheckinRuleSections, teamChargeRuleSections } from "./const";
 import { HeroMode } from "../HeroSection/const";
+import { getTermsConfig } from "@/api/chest/global";
 
 const props = defineProps<{
   ruleType?: HeroMode | "default";
@@ -30,6 +34,30 @@ const props = defineProps<{
 const emit = defineEmits<{
   (event: "close"): void;
 }>();
+
+const ruleContent = ref<string>("");
+
+onMounted(async () => {
+  let termType = "";
+  if (props.ruleType === HeroMode.MILLION_CHECKIN) {
+    termType = "baiwanduobao";
+  } else if (props.ruleType === HeroMode.TEAM_CHARGE) {
+    termType = "zhanduichongfeng";
+  } else if (props.ruleType === "default") {
+    termType = "baiwanmoren";
+  }
+
+  if (termType) {
+    try {
+      const response = await getTermsConfig(termType);
+      if (response.code === 200 && response.data) {
+        ruleContent.value = response.data.content;
+      }
+    } catch (error) {
+      console.error(`Failed to fetch terms config for ${termType}:`, error);
+    }
+  }
+});
 
 const currentSubtitle = computed(() => {
   if (props.ruleType === HeroMode.MILLION_CHECKIN) {

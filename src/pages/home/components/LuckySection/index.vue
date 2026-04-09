@@ -16,7 +16,14 @@
         <article v-for="item in luckyList" :key="item.id" class="million-lucky-row">
           <span>{{ item.userName }}</span>
           <span>{{ item.value }}</span>
-          <span class="prize-name">{{ item.prize }}</span>
+          <van-notice-bar
+            class="prize-name"
+            scrollable
+            :text="item.prize"
+            background="transparent"
+            :delay="0"
+            :speed="30"
+          />
         </article>
       </div>
 

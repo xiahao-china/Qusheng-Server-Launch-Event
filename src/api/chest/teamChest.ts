@@ -65,6 +65,10 @@ export const getTeamChestDetail = (teamId: string): Promise<IApiResponse<IChestI
   // });
 };
 
+export const getTeamChestDetailByRoomId = (roomId: string): Promise<IApiResponse<IChestInfo | null>> => {
+    return post<IApiResponse<IChestInfo | null>>(`/act/chest/team/chestInfo?roomId=${encodeURIComponent(roomId)}`);
+};
+
 export const getTeamChestDetailByUserId = (userId: string): Promise<IApiResponse<IChestInfo | null>> => {
     return post<IApiResponse<IChestInfo | null>>(`/act/chest/team/chestInfo?userId=${encodeURIComponent(userId)}`);
 };

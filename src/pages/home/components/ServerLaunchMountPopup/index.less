@@ -110,15 +110,27 @@
           right: 0;
           top: 45px;
           margin: 0;
-          font-weight: 700;
-          font-size: 18px;
-          color: #fff;
-          line-height: 1.3;
-          background: linear-gradient(270deg, #F7BBFF 0%, #FFFFFF 48%, #FFEF9F 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          text-fill-color: transparent;
+          padding: 0;
+          height: 24px;
+          min-height: 0;
+          background: transparent;
+
+          :deep(.van-notice-bar__content) {
+            font-weight: 700;
+            font-size: 18px;
+            color: #fff;
+            line-height: 1.3;
+            white-space: nowrap;
+
+            background: linear-gradient(270deg, #F7BBFF 0%, #FFFFFF 48%, #FFEF9F 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+          }
+          :deep(.van-notice-bar__wrap) {
+            justify-content: center;
+          }
         }
       }
 

@@ -22,8 +22,9 @@
         </article>
       </div>
       <div class="million-task-progress">
-        <img class="million-task-progress-bg" :src="millionCheckinAssets.progressBarBackground" alt="进度条" />
+<!--        <img class="million-task-progress-bg" :src="millionCheckinAssets.progressBarBackground" alt="进度条" />-->
         <div class="million-task-progress-fill" :style="{ width: `${props.progressPercent}%` }" />
+        <div class="million-task-progress-number">{{ props.curNum }} / {{ props.total }}</div>
       </div>
       <div class="million-task-step-row">
         <div class="step-item" v-for="step in steps" :key="step">
@@ -48,6 +49,8 @@ import { millionDressUpList } from "./const";
 import { millionCheckinAssets } from "../../const";
 
 const props = defineProps<{
+  total: number;
+  curNum: number;
   progressPercent: number;
   chestStatus: number;
   currentParticipationCount: number;

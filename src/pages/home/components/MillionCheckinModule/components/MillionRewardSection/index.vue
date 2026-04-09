@@ -14,7 +14,16 @@
           </div>
           <div class="million-reward-platform">
             <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
-            <p class="million-reward-name">{{ item.name }}</p>
+            <div class="million-reward-name-shell">
+              <van-notice-bar
+                class="million-reward-name"
+                scrollable
+                :text="item.name"
+                background="transparent"
+                :delay="0"
+                :speed="30"
+              />
+            </div>
           </div>
           <p class="million-reward-label">{{ item.label }} x{{ item.quantity }}</p>
         </article>

@@ -1,5 +1,5 @@
-import { post } from "@/util/request";
-import { IApiResponse, IChestInfo, IJoinGlobalChestPayload, IChestWinnerListPayload, IChestWinner, IPaginationData } from "@/api/chest/types";
+import { post, get } from "@/util/request";
+import { IApiResponse, IChestInfo, IJoinGlobalChestPayload, IChestWinnerListPayload, IChestWinner, IPaginationData, ITermsConfig } from "@/api/chest/types";
 
 export const getChestWinnerList = (payload: IChestWinnerListPayload): Promise<IApiResponse<IPaginationData<IChestWinner>>> => {
   return post<IApiResponse<IPaginationData<IChestWinner>>>("/act/chest/winner/list", payload);
@@ -37,6 +37,10 @@ export const getGlobalChestInfo = (): Promise<IApiResponse<IChestInfo | null>> =
   //     ]
   //   }
   // });
+};
+
+export const getTermsConfig = (type: string): Promise<IApiResponse<ITermsConfig>> => {
+  return get<IApiResponse<ITermsConfig>>(`/intf/terms/type/${type}`);
 };
 
 export const joinGlobalChest = (payload: IJoinGlobalChestPayload): Promise<IApiResponse<null>> => {

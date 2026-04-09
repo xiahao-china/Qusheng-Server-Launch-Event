@@ -83,12 +83,24 @@
   }
 
   .activity-popup-block-title,
-  .activity-popup-line {
+  .activity-popup-line,
+  .activity-popup-html {
     margin: 0 0 4px;
     font-size: 14px;
     font-weight: normal;
     line-height: 1.45;
     color: rgba(255, 255, 255, 0.7969);
+
+    :deep(p) {
+      margin: 0 0 8px;
+    }
+
+    :deep(img) {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px auto;
+    }
   }
 
   .activity-prize-row {

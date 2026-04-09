@@ -5,7 +5,7 @@
     </button>
     <div class="hero-mode-group">
       <button
-        v-for="item in heroModeOptions"
+        v-for="item in displayOptions"
         :key="item.mode"
         class="hero-mode-btn"
         :class="{ 'is-active': item.mode === props.currentMode }"
@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { heroAssets, heroModeOptions, HeroMode } from "./const";
 import { closeWebView } from "@/util/bridge";
 
@@ -32,6 +33,19 @@ const props = defineProps<{
 const emit = defineEmits<{
   (event: "mode-change", mode: HeroMode): void;
 }>();
+
+const displayOptions = computed(() => {
+  // 全服模式 (百万打卡)
+  if (props.currentMode === HeroMode.MILLION_CHECKIN) {
+    return heroModeOptions.filter((item) => item.mode !== HeroMode.TEAM_CHARGE);
+  }
+  // 战队冲锋模式
+  if (props.currentMode === HeroMode.TEAM_CHARGE) {
+    return heroModeOptions.filter((item) => item.mode !== HeroMode.MILLION_CHECKIN);
+  }
+  // 兜底返回全部 (理论上不会触发)
+  return heroModeOptions;
+});
 
 const handleClosePage = () => {
   closeWebView();

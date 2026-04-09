@@ -1,7 +1,7 @@
 <template>
   <section class="team-charge-module">
     <NoticeSection :notice-text-list="noticeTextList" />
-    <TeamSwitchTab v-model="currentTab" />
+<!--    <TeamSwitchTab v-model="currentTab" />-->
     <TeamQualificationSection
       v-if="moduleStatus === TeamModuleStatus.NoQualification && currentTab === TeamTab.MY"
       :mount-config="teamMountConfig"
@@ -15,11 +15,15 @@
     />
     <TeamTaskSection
       v-else
+      :team-user-avatar="teamChestInfo?.teamOwnerAvatar || ''"
+      :team-user-name="teamChestInfo?.teamOwnerUserName || ''"
       :team-name="teamInfo?.teamName || '我的战队'"
       :contribution="teamChestInfo?.currentParticipationCount ?? 0"
       :reward-list="teamPrizeList"
       :dress-up-list="millionDressUpList"
       :progress-percent="progressPercent"
+      :cur-num="teamChestInfo?.currentParticipationCount ?? 0"
+      :total="teamChestInfo?.totalOpenTimes ?? 0"
       :chest-status="teamChestInfo?.status ?? 0"
       :current-tab="currentTab"
       :order-team-id="orderTeamId"
@@ -28,7 +32,7 @@
       @share="sharePopupVisible = true"
       @purchase="handlePurchaseDressUp"
       @click-prize="addressPopupVisible = true"
-      @search="handleSearch"
+      @join="handleSearch"
     />
     <LuckySection :chest-type="2" :team-id="teamInfo?.teamId ? String(teamInfo.teamId) : undefined" />
     <!-- <BoardSection :rank-list="rankDisplayList" /> -->
@@ -74,7 +78,7 @@
 import {computed, onMounted, ref, watch} from "vue";
 import {showToast} from "vant";
 import {getTeamMountConfig} from "@/api/chest/team";
-import {getTeamChestDetail, getTeamChestPrizeList} from "@/api/chest/teamChest";
+import {getTeamChestDetail, getTeamChestDetailByRoomId, getTeamChestPrizeList} from "@/api/chest/teamChest";
 import type {IChestInfo, IPrizeItem, ITeamMountConfig, ITeamQualificationInfo} from "@/api/chest/types";
 import NoticeSection from "../NoticeSection/index.vue";
 import MillionPurchasePopup from "../MillionCheckinModule/components/MillionPurchasePopup/index.vue";
@@ -91,7 +95,6 @@ import LuckySection from "../LuckySection/index.vue";
 import type {IPurchaseItem} from "../MillionCheckinModule/components/MillionTaskSection/const";
 import {millionDressUpList} from "../MillionCheckinModule/components/MillionTaskSection/const";
 import {composeTeamPrizeList, loadTeamInfo, resolveApiResult, TeamModuleStatus, TeamTab} from "./const";
-import {getUserInfo} from "@/api/user.ts";
 
 const emit = defineEmits<{
   (event: "show-rule", type: string): void;
@@ -113,6 +116,7 @@ const purchasePopupVisible = ref(false);
 const pendingJoinQuantity = ref(1);
 
 const orderTeamId = ref<string | undefined>(undefined);
+const orderRoomId = ref<string | undefined>(undefined);
 
 const moduleStatus = ref<TeamModuleStatus>(TeamModuleStatus.NoQualification);
 
@@ -188,8 +192,8 @@ const loadTeamChestDetail = async (searchId?: string) => {
  * 处理战队搜索
  * @param teamId 搜索的战队ID
  */
-const handleSearch = async (teamId: string) => {
-     orderTeamId.value = teamId;
+const handleSearch = async (teamId: string | number) => {
+     orderTeamId.value = teamId ? String(teamId) : undefined;
     await init();
 };
 
@@ -204,19 +208,37 @@ const init = async () => {
   try {
     // 有id 战队 获取战队详情判断我的还是其他 切换重新init合适的数据给TeamTaskSection
     // 无id 战队 默认我的 切换重新init合适的数据给TeamTaskSection
-    teamInfo.value = await loadTeamInfo(orderTeamId.value || undefined);
-    if (!teamInfo.value?.hasTeam){
-      orderTeamId.value = undefined;
-      currentTab.value = TeamTab.MY;
-      teamInfo.value = await loadTeamInfo(undefined);
+    if (orderRoomId.value) {
+      const response = await getTeamChestDetailByRoomId(String(orderRoomId.value));
+      if (!response.data) {
+        orderTeamId.value = undefined;
+        currentTab.value = TeamTab.MY;
+        teamInfo.value = await loadTeamInfo(undefined);
+      }else {
+        orderTeamId.value = response.data.teamId?.toString();
+        teamInfo.value = {
+          hasTeam: true,
+          teamId: response.data.teamId || undefined,
+          teamName: response.data.teamName || undefined,
+          ownerUserId: undefined,
+        }
+      }
+    }else {
+      teamInfo.value = await loadTeamInfo(orderTeamId.value || undefined);
+      if (!teamInfo.value?.hasTeam){
+        orderTeamId.value = undefined;
+        currentTab.value = TeamTab.MY;
+        teamInfo.value = await loadTeamInfo(undefined);
+      }
+      if (!teamInfo.value?.hasTeam) {
+        moduleStatus.value = TeamModuleStatus.NoQualification;
+        await loadMountConfig();
+        teamChestInfo.value = null;
+        teamChestPrizeList.value = [];
+        return;
+      }
     }
-    if (!teamInfo.value?.hasTeam) {
-      moduleStatus.value = TeamModuleStatus.NoQualification;
-      await loadMountConfig();
-      teamChestInfo.value = null;
-      teamChestPrizeList.value = [];
-      return;
-    }
+
     await loadTeamChestDetail(orderTeamId.value);
     await loadTeamChestPrizeList();
   } catch (error) {
@@ -296,8 +318,8 @@ const handleClosePurchasePopup = () => {
 // 初始化加载
 onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const teamId = urlParams.get("teamId");
-    orderTeamId.value = teamId || undefined;
+    const roomId = urlParams.get("roomId");
+    orderRoomId.value = roomId || undefined;
     init();
 });
 

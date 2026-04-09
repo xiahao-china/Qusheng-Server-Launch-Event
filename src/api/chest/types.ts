@@ -20,24 +20,53 @@ export interface IChestParticipant {
 }
 
 export interface IChestInfo {
-  chestActivityId: number;
-  chestId: string;
-  type: number;
   status: number;
-  totalPrizeAmount: number;
+  teamId: string | null;
+  teamName: string | null;
+  teamOwnerAvatar: string | null;
+  teamOwnerUserName: string | null;
   singleParticipationAmount: number;
   totalOpenTimes: number;
   currentParticipationCount: number;
   firstPrizeItemId: number;
+  firstPrizeName: string;
+  firstPrizeImageUrl: string;
   firstPrizeQuantity: number;
   secondPrizeItemId: number;
+  secondPrizeName: string;
+  secondPrizeImageUrl: string;
   secondPrizeQuantity: number;
   thirdPrizeItemId: number;
+  thirdPrizeName: string;
+  thirdPrizeImageUrl: string;
   thirdPrizeQuantity: number;
-  result: IChestResult | null;
-  participants: IChestParticipant[];
-  teamId?: string;
+  specialGiftName: string | null;
+  specialGiftIconUrl: string | null;
+  chestActivityId?: number;
+  chestId?: string;
+  type?: number;
+  totalPrizeAmount?: number;
+  result?: IChestResult | null;
+  participants?: IChestParticipant[];
   initiatorUserId?: number;
+}
+
+export interface ITermsConfig {
+  content: string;
+  createTime: string;
+  createUserName: string;
+  effectiveTime: string | null;
+  forceAgree: boolean;
+  id: string;
+  remark: string;
+  status: number;
+  statusName: string;
+  title: string;
+  type: string;
+  typeName: string;
+  updateTime: string;
+  updateUserName: string;
+  version: string;
 }
 
 export interface IJoinGlobalChestPayload {
@@ -47,7 +76,7 @@ export interface IJoinGlobalChestPayload {
 
 export interface ITeamQualificationInfo {
   hasTeam: boolean;
-  teamId?: number;
+  teamId?: string;
   teamName?: string;
   ownerUserId?: number;
 }

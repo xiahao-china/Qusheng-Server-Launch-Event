@@ -36,6 +36,22 @@
     font-size: 9px;
   }
 
+  .dress-up-name {
+    padding: 0;
+    height: 100%;
+    min-height: 0;
+    background: transparent;
+
+    :deep(.van-notice-bar__content) {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    :deep(.van-notice-bar__wrap) {
+      justify-content: center;
+    }
+  }
+
   span.highlight {
     background: linear-gradient(270deg, #F7BBFF 0%, #FFFFFF 48%, #FFEF9F 100%);
     -webkit-background-clip: text;
@@ -59,6 +75,7 @@
 }
 
 .activity-popup-confirm{
+  margin-top: 12px;
   background: none;
   border: none;
   position: relative;

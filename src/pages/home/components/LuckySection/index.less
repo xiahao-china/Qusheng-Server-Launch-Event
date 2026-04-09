@@ -89,8 +89,12 @@
     }
 
     .million-lucky-content{
-      max-height: 200px;
-      overflow-y:auto;
+      max-height: 176px; // approx 4 rows
+      overflow-y: auto;
+      
+      &::-webkit-scrollbar {
+        width: 0;
+      }
     }
 
     .million-lucky-row {
@@ -111,19 +115,26 @@
         &:first-child {
           text-align: left;
         }
-        
-        &:last-child {
-          text-align: right;
-          color: #ffe27a;
-          font-weight: 700;
-        }
       }
-      .prize-name{
-        background: linear-gradient(270deg, #F7BBFF 0%, #FFFFFF 48%, #FFEF9F 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
+      .prize-name {
+        flex: 1;
+        padding: 0;
+        height: 38px;
+        line-height: 38px;
+        min-height: 0;
+        background: transparent;
+        :deep(.van-notice-bar__content) {
+          background: linear-gradient(270deg, #F7BBFF 0%, #FFFFFF 48%, #FFEF9F 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-fill-color: transparent;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+        :deep(.van-notice-bar__wrap) {
+          justify-content: flex-end;
+        }
       }
     }
 

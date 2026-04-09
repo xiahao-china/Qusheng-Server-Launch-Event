@@ -23,7 +23,14 @@
             </div>
             <div class="million-reward-platform">
               <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
-              <p class="million-reward-name">{{ item.name }}</p>
+              <van-notice-bar
+                class="million-reward-name"
+                scrollable
+                :text="item.name"
+                background="transparent"
+                :delay="0"
+                :speed="30"
+              />
             </div>
           </article>
         </div>
@@ -55,7 +62,14 @@
         <img class="million-purchase-popup-image" :src="mountConfig?.specialGiftIconUrl" :alt="mountConfig?.specialGiftName" />
         <div class="million-reward-platform-lar ">
           <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
-          <p class="million-reward-name">{{ mountConfig?.specialGiftName }}</p>
+          <van-notice-bar
+            class="million-reward-name"
+            scrollable
+            :text="mountConfig?.specialGiftName"
+            background="transparent"
+            :delay="0"
+            :speed="30"
+          />
         </div>
 
         <div class="rename-action-row">

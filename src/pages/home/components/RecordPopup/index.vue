@@ -16,7 +16,14 @@
           <template v-else>
             <article v-for="item in recordList" :key="item.id" class="record-popup-row">
               <span class="time">{{ item.time }}</span>
-              <span>{{ item.dressUpName }}</span>
+              <van-notice-bar
+                class="dress-up-name"
+                scrollable
+                :text="item.dressUpName"
+                background="transparent"
+                :delay="0"
+                :speed="30"
+              />
               <span class="highlight">{{ item.activityType }}</span>
               <span :class="{'highlight': item.status !== '未中奖'}">{{ item.status }}</span>
             </article>
@@ -24,8 +31,7 @@
           </template>
         </div>
         <button class="activity-popup-confirm" type="button" @click="emitClose">
-          <img :src="activityPopupAssets.confirmButton" alt="关闭" />
-          <div class="text">关闭</div>
+          <img :src="activityPopupAssets.closeBtn" alt="关闭" />
         </button>
       </div>
     </section>

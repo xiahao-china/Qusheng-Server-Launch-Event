@@ -1,7 +1,7 @@
 export const heroAssets = {
   topBackground: new URL("../../../../assets/top-background.png", import.meta.url).href,
   backButton: new URL("../../../../assets/back-button.png", import.meta.url).href,
-  allPrizes: new URL("../../../../assets/all-prizes.png", import.meta.url).href,
+  allPrizes: new URL("../../../../assets/all-prize.png", import.meta.url).href,
   mainBtnActive: new URL("../../../../assets/main-btn-active.png", import.meta.url).href,
   mainBtnNormal: new URL("../../../../assets/main-btn-normal.png", import.meta.url).href,
 };

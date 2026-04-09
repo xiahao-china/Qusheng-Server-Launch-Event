@@ -32,9 +32,11 @@ const currentRuleType = ref<HeroMode | "default">("default");
 
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search);
-  const teamId = urlParams.get("teamId");
-  if (teamId) {
-    currentMode.value = HeroMode.TEAM_CHARGE;
+  const isRoom = urlParams.get("isRoom");
+
+  if (isRoom !== null) {
+    // isRoom 为 1 时是百万打卡(全服活动)，为 0 时是战队冲锋
+    currentMode.value = isRoom === "1" ? HeroMode.MILLION_CHECKIN : HeroMode.TEAM_CHARGE;
   } else {
     currentMode.value = HeroMode.MILLION_CHECKIN;
   }

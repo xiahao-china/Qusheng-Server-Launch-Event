@@ -23,18 +23,18 @@
 
   .hero-mode-group {
     position: absolute;
-    bottom: 0px;
+    bottom: 4px;
     left: 0;
     width: 100%;
     z-index: 2;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
     gap: 16px;
 
     .hero-mode-btn {
       position: relative;
-      height: 80px;
+      height: 60px;
       border: 0;
       padding: 0;
       background: transparent;
@@ -44,7 +44,7 @@
       justify-content: center;
 
       &.is-active{
-        transform: translateY(-3px);
+        transform: translateY(-3px) scale(1.1);
         .hero-mode-btn-text{
           transform: translateY(-2px);
         }
@@ -53,7 +53,7 @@
       .hero-mode-btn-bg {
         position: relative;
         display: block;
-        width: 100%;
+        height: 100%;
         object-fit: cover;
         z-index: 1;
       }

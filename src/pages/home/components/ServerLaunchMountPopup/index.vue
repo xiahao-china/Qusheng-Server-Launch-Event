@@ -15,7 +15,14 @@
         <img class="million-purchase-popup-image" :src="mountUrl" :alt="mountConfig?.mountName" />
         <div class="million-reward-platform">
           <img :src="millionCheckinAssets.prizePlatform" alt="奖品平台">
-          <p class="million-reward-name">{{ mountConfig?.mountName }}</p>
+          <van-notice-bar
+            class="million-reward-name"
+            scrollable
+            :text="mountConfig?.mountName"
+            background="transparent"
+            :delay="0"
+            :speed="30"
+          />
         </div>
 
         <template v-if="!success">
